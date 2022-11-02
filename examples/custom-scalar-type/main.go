@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/language/ast"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/language/ast"
 )
 
 type CustomID struct {
@@ -79,7 +79,8 @@ func main() {
 				"customers": &graphql.Field{
 					Type: graphql.NewList(CustomerType),
 					Args: graphql.FieldConfigArgument{
-						"id": &graphql.ArgumentConfig{
+						&graphql.ArgumentConfig{
+							Name: "id",
 							Type: CustomScalarType,
 						},
 					},

@@ -3,10 +3,10 @@ package graphql_test
 import (
 	"testing"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/gqlerrors"
-	"github.com/graphql-go/graphql/language/location"
-	"github.com/graphql-go/graphql/testutil"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/gqlerrors"
+	"github.com/dagger/graphql/language/location"
+	"github.com/dagger/graphql/testutil"
 )
 
 func g(t *testing.T, p graphql.Params) *graphql.Result {
@@ -853,7 +853,8 @@ func TestIntrospection_ExecutesAnInputObject(t *testing.T) {
 			"field": &graphql.Field{
 				Type: graphql.String,
 				Args: graphql.FieldConfigArgument{
-					"complex": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "complex",
 						Type: testInputObject,
 					},
 				},

@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/graphql-go/graphql/language/ast"
-	"github.com/graphql-go/graphql/language/printer"
+	"github.com/dagger/graphql/language/ast"
+	"github.com/dagger/graphql/language/printer"
 )
 
 const (
@@ -522,7 +522,8 @@ func init() {
 	TypeType.AddFieldConfig("fields", &Field{
 		Type: NewList(NewNonNull(FieldType)),
 		Args: FieldConfigArgument{
-			"includeDeprecated": &ArgumentConfig{
+			&ArgumentConfig{
+				Name:         "includeDeprecated",
 				Type:         Boolean,
 				DefaultValue: false,
 			},
@@ -587,7 +588,8 @@ func init() {
 	TypeType.AddFieldConfig("enumValues", &Field{
 		Type: NewList(NewNonNull(EnumValueType)),
 		Args: FieldConfigArgument{
-			"includeDeprecated": &ArgumentConfig{
+			&ArgumentConfig{
+				Name:         "includeDeprecated",
 				Type:         Boolean,
 				DefaultValue: false,
 			},

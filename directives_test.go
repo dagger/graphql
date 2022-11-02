@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/gqlerrors"
-	"github.com/graphql-go/graphql/testutil"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/gqlerrors"
+	"github.com/dagger/graphql/testutil"
 )
 
 var directivesTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
@@ -115,7 +115,8 @@ func TestDirectives_DirectiveArgNamesMustBeValid(t *testing.T) {
 		Description: "Directs the executor to skip this field or fragment when the `if` " +
 			"argument is true.",
 		Args: graphql.FieldConfigArgument{
-			"123if": &graphql.ArgumentConfig{
+			&graphql.ArgumentConfig{
+				Name:        "123if",
 				Type:        graphql.NewNonNull(graphql.Boolean),
 				Description: "Skipped when true.",
 			},

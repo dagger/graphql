@@ -5,11 +5,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/gqlerrors"
-	"github.com/graphql-go/graphql/language/ast"
-	"github.com/graphql-go/graphql/language/location"
-	"github.com/graphql-go/graphql/testutil"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/gqlerrors"
+	"github.com/dagger/graphql/language/ast"
+	"github.com/dagger/graphql/language/location"
+	"github.com/dagger/graphql/testutil"
 )
 
 var testComplexScalar *graphql.Scalar = graphql.NewScalar(graphql.ScalarConfig{
@@ -83,7 +83,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"fieldWithObjectInput": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: testInputObject,
 				},
 			},
@@ -92,7 +93,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"fieldWithNullableStringInput": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.String,
 				},
 			},
@@ -101,7 +103,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"fieldWithNonNullableStringInput": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
@@ -110,7 +113,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"fieldWithDefaultArgumentValue": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name:         "input",
 					Type:         graphql.String,
 					DefaultValue: "Hello World",
 				},
@@ -120,7 +124,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"fieldWithNestedInputObject": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name:         "input",
 					Type:         testNestedInputObject,
 					DefaultValue: "Hello World",
 				},
@@ -130,7 +135,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"list": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.NewList(graphql.String),
 				},
 			},
@@ -139,7 +145,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"nnList": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.NewNonNull(graphql.NewList(graphql.String)),
 				},
 			},
@@ -148,7 +155,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"listNN": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.NewList(graphql.NewNonNull(graphql.String)),
 				},
 			},
@@ -157,7 +165,8 @@ var testType *graphql.Object = graphql.NewObject(graphql.ObjectConfig{
 		"nnListNN": &graphql.Field{
 			Type: graphql.String,
 			Args: graphql.FieldConfigArgument{
-				"input": &graphql.ArgumentConfig{
+				&graphql.ArgumentConfig{
+					Name: "input",
 					Type: graphql.NewNonNull(graphql.NewList(graphql.NewNonNull(graphql.String))),
 				},
 			},

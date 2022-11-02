@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/language/ast"
 	"log"
+
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/language/ast"
 )
 
 // NullString to be used in place of sql.NullString
@@ -128,7 +129,8 @@ func main() {
 				"people": &graphql.Field{
 					Type: graphql.NewList(PersonType),
 					Args: graphql.FieldConfigArgument{
-						"favorite_dog": &graphql.ArgumentConfig{
+						&graphql.ArgumentConfig{
+							Name: "favorite_dog",
 							Type: NullableString,
 						},
 					},

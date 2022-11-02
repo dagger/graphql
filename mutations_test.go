@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/gqlerrors"
-	"github.com/graphql-go/graphql/language/location"
-	"github.com/graphql-go/graphql/testutil"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/gqlerrors"
+	"github.com/dagger/graphql/language/location"
+	"github.com/dagger/graphql/testutil"
 )
 
 // testNumberHolder maps to numberHolderType
@@ -62,7 +62,8 @@ var mutationsTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
 			"immediatelyChangeTheNumber": &graphql.Field{
 				Type: numberHolderType,
 				Args: graphql.FieldConfigArgument{
-					"newNumber": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "newNumber",
 						Type: graphql.Int,
 					},
 				},
@@ -76,7 +77,8 @@ var mutationsTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
 			"promiseToChangeTheNumber": &graphql.Field{
 				Type: numberHolderType,
 				Args: graphql.FieldConfigArgument{
-					"newNumber": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "newNumber",
 						Type: graphql.Int,
 					},
 				},
@@ -90,7 +92,8 @@ var mutationsTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
 			"failToChangeTheNumber": &graphql.Field{
 				Type: numberHolderType,
 				Args: graphql.FieldConfigArgument{
-					"newNumber": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "newNumber",
 						Type: graphql.Int,
 					},
 				},
@@ -104,7 +107,8 @@ var mutationsTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
 			"promiseAndFailToChangeTheNumber": &graphql.Field{
 				Type: numberHolderType,
 				Args: graphql.FieldConfigArgument{
-					"newNumber": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "newNumber",
 						Type: graphql.Int,
 					},
 				},

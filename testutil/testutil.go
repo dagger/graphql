@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/graphql-go/graphql"
-	"github.com/graphql-go/graphql/gqlerrors"
-	"github.com/graphql-go/graphql/language/ast"
-	"github.com/graphql-go/graphql/language/parser"
+	"github.com/dagger/graphql"
+	"github.com/dagger/graphql/gqlerrors"
+	"github.com/dagger/graphql/language/ast"
+	"github.com/dagger/graphql/language/parser"
 )
 
 var (
@@ -282,7 +282,8 @@ func init() {
 			"hero": &graphql.Field{
 				Type: characterInterface,
 				Args: graphql.FieldConfigArgument{
-					"episode": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name: "episode",
 						Description: "If omitted, returns the hero of the whole saga. If " +
 							"provided, returns the hero of that particular episode.",
 						Type: episodeEnum,
@@ -295,7 +296,8 @@ func init() {
 			"human": &graphql.Field{
 				Type: humanType,
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name:        "id",
 						Description: "id of the human",
 						Type:        graphql.NewNonNull(graphql.String),
 					},
@@ -311,7 +313,8 @@ func init() {
 			"droid": &graphql.Field{
 				Type: droidType,
 				Args: graphql.FieldConfigArgument{
-					"id": &graphql.ArgumentConfig{
+					&graphql.ArgumentConfig{
+						Name:        "id",
 						Description: "id of the droid",
 						Type:        graphql.NewNonNull(graphql.String),
 					},
