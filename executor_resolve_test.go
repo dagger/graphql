@@ -120,7 +120,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	// For structs without JSON tags, it will map to upper-cased exported field names
 	type SubObjectWithoutJSONTags struct {
 		Str string
-		Int int
+		Int int64
 	}
 
 	schema := testSchema(t, &graphql.Field{
@@ -138,7 +138,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 		},
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			aStr, _ := p.Args["aStr"].(string)
-			aInt, _ := p.Args["aInt"].(int)
+			aInt, _ := p.Args["aInt"].(int64)
 			return &SubObjectWithoutJSONTags{
 				Str: aStr,
 				Int: aInt,
@@ -149,7 +149,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected := map[string]interface{}{
 		"test": map[string]interface{}{
 			"Str": "",
-			"Int": 0,
+			"Int": int64(0),
 		},
 	}
 	result := graphql.Do(graphql.Params{
@@ -164,7 +164,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected = map[string]interface{}{
 		"test": map[string]interface{}{
 			"Str": "String!",
-			"Int": 0,
+			"Int": int64(0),
 		},
 	}
 	result = graphql.Do(graphql.Params{
@@ -178,7 +178,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected = map[string]interface{}{
 		"test": map[string]interface{}{
 			"Str": "String!",
-			"Int": -123,
+			"Int": int64(-123),
 		},
 	}
 	result = graphql.Do(graphql.Params{
@@ -196,7 +196,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	type SubObjectWithJSONTags struct {
 		OtherField string `json:""`
 		Str        string `json:"str"`
-		Int        int    `json:"int"`
+		Int        int64  `json:"int"`
 	}
 
 	schema := testSchema(t, &graphql.Field{
@@ -214,7 +214,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 		},
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			aStr, _ := p.Args["aStr"].(string)
-			aInt, _ := p.Args["aInt"].(int)
+			aInt, _ := p.Args["aInt"].(int64)
 			return &SubObjectWithJSONTags{
 				Str: aStr,
 				Int: aInt,
@@ -225,7 +225,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected := map[string]interface{}{
 		"test": map[string]interface{}{
 			"str": "",
-			"int": 0,
+			"int": int64(0),
 		},
 	}
 	result := graphql.Do(graphql.Params{
@@ -240,7 +240,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected = map[string]interface{}{
 		"test": map[string]interface{}{
 			"str": "String!",
-			"int": 0,
+			"int": int64(0),
 		},
 	}
 	result = graphql.Do(graphql.Params{
@@ -254,7 +254,7 @@ func TestExecutesResolveFunction_UsesProvidedResolveFunction_SourceIsStruct_With
 	expected = map[string]interface{}{
 		"test": map[string]interface{}{
 			"str": "String!",
-			"int": -123,
+			"int": int64(-123),
 		},
 	}
 	result = graphql.Do(graphql.Params{
