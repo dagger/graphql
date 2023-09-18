@@ -14,10 +14,10 @@ import (
 
 type ExecuteParams struct {
 	Schema        Schema
-	Root          interface{}
+	Root          any
 	AST           *ast.Document
 	OperationName string
-	Args          map[string]interface{}
+	Args          map[string]any
 
 	// Context may be provided to pass application-specific per-request
 	// information to resolve functions.
@@ -94,10 +94,10 @@ func Execute(p ExecuteParams) (result *Result) {
 
 type buildExecutionCtxParams struct {
 	Schema        Schema
-	Root          interface{}
+	Root          any
 	AST           *ast.Document
 	OperationName string
-	Args          map[string]interface{}
+	Args          map[string]any
 	Result        *Result
 	Context       context.Context
 }
@@ -105,9 +105,9 @@ type buildExecutionCtxParams struct {
 type executionContext struct {
 	Schema         Schema
 	Fragments      map[string]ast.Definition
-	Root           interface{}
+	Root           any
 	Operation      ast.Definition
-	VariableValues map[string]interface{}
+	VariableValues map[string]any
 	Errors         []gqlerrors.FormattedError
 	Context        context.Context
 }
@@ -160,7 +160,7 @@ func buildExecutionContext(p buildExecutionCtxParams) (*executionContext, error)
 
 type executeOperationParams struct {
 	ExecutionContext *executionContext
-	Root             interface{}
+	Root             any
 	Operation        ast.Definition
 }
 
@@ -240,7 +240,7 @@ func getOperationRootType(schema Schema, operation ast.Definition) (*Object, err
 type executeFieldsParams struct {
 	ExecutionContext *executionContext
 	ParentType       *Object
-	Source           interface{}
+	Source           any
 	Fields           map[string][]*ast.Field
 	Path             *ResponsePath
 }
@@ -248,13 +248,13 @@ type executeFieldsParams struct {
 // Implements the "Evaluating selection sets" section of the spec for "write" mode.
 func executeFieldsSerially(p executeFieldsParams) *Result {
 	if p.Source == nil {
-		p.Source = map[string]interface{}{}
+		p.Source = map[string]any{}
 	}
 	if p.Fields == nil {
 		p.Fields = map[string][]*ast.Field{}
 	}
 
-	finalResults := make(map[string]interface{}, len(p.Fields))
+	finalResults := make(map[string]any, len(p.Fields))
 	for _, orderedField := range orderedFields(p.Fields) {
 		responseName := orderedField.responseName
 		fieldASTs := orderedField.fieldASTs
@@ -285,16 +285,16 @@ func executeFields(p executeFieldsParams) *Result {
 	}
 }
 
-func executeSubFields(p executeFieldsParams) map[string]interface{} {
+func executeSubFields(p executeFieldsParams) map[string]any {
 
 	if p.Source == nil {
-		p.Source = map[string]interface{}{}
+		p.Source = map[string]any{}
 	}
 	if p.Fields == nil {
 		p.Fields = map[string][]*ast.Field{}
 	}
 
-	finalResults := make(map[string]interface{}, len(p.Fields))
+	finalResults := make(map[string]any, len(p.Fields))
 	for responseName, fieldASTs := range p.Fields {
 		fieldPath := p.Path.WithKey(responseName)
 		resolved, state := resolveField(p.ExecutionContext, p.ParentType, p.Source, fieldASTs, fieldPath)
@@ -326,7 +326,7 @@ func (d *dethunkQueue) shift() func() {
 // in the map values and replacing each thunk with that thunk's return value. This parallels
 // the reference graphql-js implementation, which calls Promise.all on thunks at each depth (which
 // is an implicit parallel descent).
-func dethunkMapWithBreadthFirstTraversal(finalResults map[string]interface{}) {
+func dethunkMapWithBreadthFirstTraversal(finalResults map[string]any) {
 	dethunkQueue := &dethunkQueue{DethunkFuncs: []func(){}}
 	dethunkMapBreadthFirst(finalResults, dethunkQueue)
 	for len(dethunkQueue.DethunkFuncs) > 0 {
@@ -335,29 +335,29 @@ func dethunkMapWithBreadthFirstTraversal(finalResults map[string]interface{}) {
 	}
 }
 
-func dethunkMapBreadthFirst(m map[string]interface{}, dethunkQueue *dethunkQueue) {
+func dethunkMapBreadthFirst(m map[string]any, dethunkQueue *dethunkQueue) {
 	for k, v := range m {
-		if f, ok := v.(func() interface{}); ok {
+		if f, ok := v.(func() any); ok {
 			m[k] = f()
 		}
 		switch val := m[k].(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			dethunkQueue.push(func() { dethunkMapBreadthFirst(val, dethunkQueue) })
-		case []interface{}:
+		case []any:
 			dethunkQueue.push(func() { dethunkListBreadthFirst(val, dethunkQueue) })
 		}
 	}
 }
 
-func dethunkListBreadthFirst(list []interface{}, dethunkQueue *dethunkQueue) {
+func dethunkListBreadthFirst(list []any, dethunkQueue *dethunkQueue) {
 	for i, v := range list {
-		if f, ok := v.(func() interface{}); ok {
+		if f, ok := v.(func() any); ok {
 			list[i] = f()
 		}
 		switch val := list[i].(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			dethunkQueue.push(func() { dethunkMapBreadthFirst(val, dethunkQueue) })
-		case []interface{}:
+		case []any:
 			dethunkQueue.push(func() { dethunkListBreadthFirst(val, dethunkQueue) })
 		}
 	}
@@ -367,29 +367,29 @@ func dethunkListBreadthFirst(list []interface{}, dethunkQueue *dethunkQueue) {
 // in the map values and replacing each thunk with that thunk's return value. This is needed
 // to conform to the graphql-js reference implementation, which requires serial (depth-first)
 // implementations for mutation selects.
-func dethunkMapDepthFirst(m map[string]interface{}) {
+func dethunkMapDepthFirst(m map[string]any) {
 	for k, v := range m {
-		if f, ok := v.(func() interface{}); ok {
+		if f, ok := v.(func() any); ok {
 			m[k] = f()
 		}
 		switch val := m[k].(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			dethunkMapDepthFirst(val)
-		case []interface{}:
+		case []any:
 			dethunkListDepthFirst(val)
 		}
 	}
 }
 
-func dethunkListDepthFirst(list []interface{}) {
+func dethunkListDepthFirst(list []any) {
 	for i, v := range list {
-		if f, ok := v.(func() interface{}); ok {
+		if f, ok := v.(func() any); ok {
 			list[i] = f()
 		}
 		switch val := list[i].(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			dethunkMapDepthFirst(val)
-		case []interface{}:
+		case []any:
 			dethunkListDepthFirst(val)
 		}
 	}
@@ -483,7 +483,7 @@ func collectFields(p collectFieldsParams) (fields map[string][]*ast.Field) {
 func shouldIncludeNode(eCtx *executionContext, directives []*ast.Directive) bool {
 	var (
 		skipAST, includeAST *ast.Directive
-		argValues           map[string]interface{}
+		argValues           map[string]any
 	)
 	for _, directive := range directives {
 		if directive == nil || directive.Name == nil {
@@ -580,7 +580,7 @@ type resolveFieldResultState struct {
 	hasNoFieldDefs bool
 }
 
-func handleFieldError(r interface{}, fieldNodes []ast.Node, path *ResponsePath, returnType Output, eCtx *executionContext) {
+func handleFieldError(r any, fieldNodes []ast.Node, path *ResponsePath, returnType Output, eCtx *executionContext) {
 	err := NewLocatedErrorWithPath(r, fieldNodes, path.AsArray())
 	// send panic upstream
 	if _, ok := returnType.(*NonNull); ok {
@@ -593,10 +593,10 @@ func handleFieldError(r interface{}, fieldNodes []ast.Node, path *ResponsePath, 
 // figures out the value that the field returns by calling its resolve function,
 // then calls completeValue to complete promises, serialize scalars, or execute
 // the sub-selection-set for objects.
-func resolveField(eCtx *executionContext, parentType *Object, source interface{}, fieldASTs []*ast.Field, path *ResponsePath) (result interface{}, resultState resolveFieldResultState) {
+func resolveField(eCtx *executionContext, parentType *Object, source any, fieldASTs []*ast.Field, path *ResponsePath) (result any, resultState resolveFieldResultState) {
 	// catch panic from resolveFn
 	var returnType Output
-	defer func() (interface{}, resolveFieldResultState) {
+	defer func() (any, resolveFieldResultState) {
 		if r := recover(); r != nil {
 			handleFieldError(r, FieldASTsToNodeASTs(fieldASTs), path, returnType, eCtx)
 			return result, resultState
@@ -666,9 +666,9 @@ func resolveField(eCtx *executionContext, parentType *Object, source interface{}
 	return completed, resultState
 }
 
-func completeValueCatchingError(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) (completed interface{}) {
+func completeValueCatchingError(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) (completed any) {
 	// catch panic
-	defer func() interface{} {
+	defer func() any {
 		if r := recover(); r != nil {
 			handleFieldError(r, FieldASTsToNodeASTs(fieldASTs), path, returnType, eCtx)
 			return completed
@@ -684,11 +684,11 @@ func completeValueCatchingError(eCtx *executionContext, returnType Type, fieldAS
 	return completed
 }
 
-func completeValue(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) interface{} {
+func completeValue(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) any {
 
 	resultVal := reflect.ValueOf(result)
 	if resultVal.IsValid() && resultVal.Kind() == reflect.Func {
-		return func() interface{} {
+		return func() any {
 			return completeThunkValueCatchingError(eCtx, returnType, fieldASTs, info, path, result)
 		}
 	}
@@ -751,7 +751,7 @@ func completeValue(eCtx *executionContext, returnType Type, fieldASTs []*ast.Fie
 	return nil
 }
 
-func completeThunkValueCatchingError(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) (completed interface{}) {
+func completeThunkValueCatchingError(eCtx *executionContext, returnType Type, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) (completed any) {
 
 	// catch any panic invoked from the propertyFn (thunk)
 	defer func() {
@@ -760,7 +760,7 @@ func completeThunkValueCatchingError(eCtx *executionContext, returnType Type, fi
 		}
 	}()
 
-	propertyFn, ok := result.(func() (interface{}, error))
+	propertyFn, ok := result.(func() (any, error))
 	if !ok {
 		err := gqlerrors.NewFormattedError("Error resolving func. Expected `func() (interface{}, error)` signature")
 		panic(gqlerrors.FormatError(err))
@@ -783,7 +783,7 @@ func completeThunkValueCatchingError(eCtx *executionContext, returnType Type, fi
 
 // completeAbstractValue completes value of an Abstract type (Union / Interface) by determining the runtime type
 // of that value, then completing based on that type.
-func completeAbstractValue(eCtx *executionContext, returnType Abstract, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) interface{} {
+func completeAbstractValue(eCtx *executionContext, returnType Abstract, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) any {
 
 	var runtimeType *Object
 
@@ -818,7 +818,7 @@ func completeAbstractValue(eCtx *executionContext, returnType Abstract, fieldAST
 }
 
 // completeObjectValue complete an Object value by executing all sub-selections.
-func completeObjectValue(eCtx *executionContext, returnType *Object, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) interface{} {
+func completeObjectValue(eCtx *executionContext, returnType *Object, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) any {
 
 	// If there is an isTypeOf predicate function, call it with the
 	// current result. If isTypeOf returns false, then raise an error rather
@@ -866,7 +866,7 @@ func completeObjectValue(eCtx *executionContext, returnType *Object, fieldASTs [
 }
 
 // completeLeafValue complete a leaf value (Scalar / Enum) by serializing to a valid value, returning nil if serialization is not possible.
-func completeLeafValue(returnType Leaf, result interface{}) interface{} {
+func completeLeafValue(returnType Leaf, result any) any {
 	serializedResult := returnType.Serialize(result)
 	if isNullish(serializedResult) {
 		return nil
@@ -875,7 +875,7 @@ func completeLeafValue(returnType Leaf, result interface{}) interface{} {
 }
 
 // completeListValue complete a list value by completing each item in the list with the inner type
-func completeListValue(eCtx *executionContext, returnType *List, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result interface{}) interface{} {
+func completeListValue(eCtx *executionContext, returnType *List, fieldASTs []*ast.Field, info ResolveInfo, path *ResponsePath, result any) any {
 	resultVal := reflect.ValueOf(result)
 	if resultVal.Kind() == reflect.Ptr {
 		resultVal = resultVal.Elem()
@@ -894,7 +894,7 @@ func completeListValue(eCtx *executionContext, returnType *List, fieldASTs []*as
 	}
 
 	itemType := returnType.OfType
-	completedResults := make([]interface{}, 0, resultVal.Len())
+	completedResults := make([]any, 0, resultVal.Len())
 	for i := 0; i < resultVal.Len(); i++ {
 		val := resultVal.Index(i).Interface()
 		fieldPath := path.WithKey(i)
@@ -928,14 +928,14 @@ func defaultResolveTypeFn(p ResolveTypeParams, abstractType Abstract) *Object {
 // FieldResolver is used in DefaultResolveFn when the the source value implements this interface.
 type FieldResolver interface {
 	// Resolve resolves the value for the given ResolveParams. It has the same semantics as FieldResolveFn.
-	Resolve(p ResolveParams) (interface{}, error)
+	Resolve(p ResolveParams) (any, error)
 }
 
 // DefaultResolveFn If a resolve function is not given, then a default resolve behavior is used
 // which takes the property of the source object of the same name as the field
 // and returns it as the result, or if it's a function, returns the result
 // of calling that function.
-func DefaultResolveFn(p ResolveParams) (interface{}, error) {
+func DefaultResolveFn(p ResolveParams) (any, error) {
 	sourceVal := reflect.ValueOf(p.Source)
 	// Check if value implements 'Resolver' interface
 	if resolver, ok := sourceVal.Interface().(FieldResolver); ok {
@@ -980,13 +980,13 @@ func DefaultResolveFn(p ResolveParams) (interface{}, error) {
 	}
 
 	// try p.Source as a map[string]interface
-	if sourceMap, ok := p.Source.(map[string]interface{}); ok {
+	if sourceMap, ok := p.Source.(map[string]any); ok {
 		property := sourceMap[p.Info.FieldName]
 		val := reflect.ValueOf(property)
 		if val.IsValid() && val.Type().Kind() == reflect.Func {
 			// try type casting the func to the most basic func signature
 			// for more complex signatures, user have to define ResolveFn
-			if propertyFn, ok := property.(func() interface{}); ok {
+			if propertyFn, ok := property.(func() any); ok {
 				return propertyFn(), nil
 			}
 		}
@@ -1001,7 +1001,7 @@ func DefaultResolveFn(p ResolveParams) (interface{}, error) {
 			if val.Type().Kind() == reflect.Func {
 				// try type casting the func to the most basic func signature
 				// for more complex signatures, user have to define ResolveFn
-				if propertyFn, ok := property.(func() interface{}); ok {
+				if propertyFn, ok := property.(func() any); ok {
 					return propertyFn(), nil
 				}
 			}

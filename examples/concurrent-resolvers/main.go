@@ -38,18 +38,18 @@ var QueryType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"concurrentFieldFoo": &graphql.Field{
 			Type: FieldFooType,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(p graphql.ResolveParams) (any, error) {
 				var foo = Foo{Name: "Foo's name"}
-				return func() (interface{}, error) {
+				return func() (any, error) {
 					return &foo, nil
 				}, nil
 			},
 		},
 		"concurrentFieldBar": &graphql.Field{
 			Type: FieldBarType,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(p graphql.ResolveParams) (any, error) {
 				type result struct {
-					data interface{}
+					data any
 					err  error
 				}
 				ch := make(chan *result, 1)
@@ -58,7 +58,7 @@ var QueryType = graphql.NewObject(graphql.ObjectConfig{
 					bar := &Bar{Name: "Bar's name"}
 					ch <- &result{data: bar, err: nil}
 				}()
-				return func() (interface{}, error) {
+				return func() (any, error) {
 					r := <-ch
 					return r.data, r.err
 				}, nil

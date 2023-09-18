@@ -24,9 +24,9 @@ type (
 	executionFinishFuncHandler func(*Result) []gqlerrors.FormattedError
 
 	// ResolveFieldFinishFunc is called with the result of the ResolveFn and the error it returned
-	ResolveFieldFinishFunc func(interface{}, error)
+	ResolveFieldFinishFunc func(any, error)
 	// resolveFieldFinishFuncHandler calls the resolveFieldFinishFns for all the extensions
-	resolveFieldFinishFuncHandler func(interface{}, error) []gqlerrors.FormattedError
+	resolveFieldFinishFuncHandler func(any, error) []gqlerrors.FormattedError
 )
 
 // Extension is an interface for extensions in graphql
@@ -53,7 +53,7 @@ type Extension interface {
 	HasResult() bool
 
 	// GetResult returns the data that the extension wants to add to the result
-	GetResult(context.Context) interface{}
+	GetResult(context.Context) any
 }
 
 // handleExtensionsInits handles all the init functions for all the extensions in the schema
@@ -213,7 +213,7 @@ func handleExtensionsResolveFieldDidStart(exts []Extension, p *executionContext,
 			fs[ext.Name()] = finishFn
 		}()
 	}
-	return errs, func(val interface{}, err error) []gqlerrors.FormattedError {
+	return errs, func(val any, err error) []gqlerrors.FormattedError {
 		extErrs := gqlerrors.FormattedErrors{}
 		for name, finishFn := range fs {
 			func() {
@@ -241,7 +241,7 @@ func addExtensionResults(p *ExecuteParams, result *Result) {
 				}()
 				if ext.HasResult() {
 					if result.Extensions == nil {
-						result.Extensions = make(map[string]interface{})
+						result.Extensions = make(map[string]any)
 					}
 					result.Extensions[ext.Name()] = ext.GetResult(p.Context)
 				}

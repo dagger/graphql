@@ -24,7 +24,7 @@ func ListSchemaWithXItems(x int) graphql.Schema {
 			"hex": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.String),
 				Description: "Hex color code.",
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					if c, ok := p.Source.(color); ok {
 						return c.Hex, nil
 					}
@@ -34,7 +34,7 @@ func ListSchemaWithXItems(x int) graphql.Schema {
 			"r": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.Int),
 				Description: "Red value.",
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					if c, ok := p.Source.(color); ok {
 						return c.R, nil
 					}
@@ -44,7 +44,7 @@ func ListSchemaWithXItems(x int) graphql.Schema {
 			"g": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.Int),
 				Description: "Green value.",
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					if c, ok := p.Source.(color); ok {
 						return c.G, nil
 					}
@@ -54,7 +54,7 @@ func ListSchemaWithXItems(x int) graphql.Schema {
 			"b": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.Int),
 				Description: "Blue value.",
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					if c, ok := p.Source.(color); ok {
 						return c.B, nil
 					}
@@ -69,7 +69,7 @@ func ListSchemaWithXItems(x int) graphql.Schema {
 		Fields: graphql.Fields{
 			"colors": {
 				Type: graphql.NewList(color),
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					return list, nil
 				},
 			},

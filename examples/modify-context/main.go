@@ -18,8 +18,8 @@ var UserType = graphql.NewObject(graphql.ObjectConfig{
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
 			Type: graphql.Int,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				rootValue := p.Info.RootValue.(map[string]interface{})
+			Resolve: func(p graphql.ResolveParams) (any, error) {
+				rootValue := p.Info.RootValue.(map[string]any)
 				if rootValue["data-from-parent"] == "ok" &&
 					rootValue["data-before-execution"] == "ok" {
 					user := p.Source.(User)
@@ -38,8 +38,8 @@ func main() {
 			Fields: graphql.Fields{
 				"users": &graphql.Field{
 					Type: graphql.NewList(UserType),
-					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-						rootValue := p.Info.RootValue.(map[string]interface{})
+					Resolve: func(p graphql.ResolveParams) (any, error) {
+						rootValue := p.Info.RootValue.(map[string]any)
 						rootValue["data-from-parent"] = "ok"
 						result := []User{
 							User{ID: 1},
@@ -58,7 +58,7 @@ func main() {
 	// Instead of trying to modify context within a resolve function, use:
 	// `graphql.Params.RootObject` is a mutable optional variable and available on
 	// each resolve function via: `graphql.ResolveParams.Info.RootValue`.
-	rootObject := map[string]interface{}{
+	rootObject := map[string]any{
 		"data-before-execution": "ok",
 	}
 	result := graphql.Do(graphql.Params{

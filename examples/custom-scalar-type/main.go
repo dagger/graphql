@@ -25,7 +25,7 @@ var CustomScalarType = graphql.NewScalar(graphql.ScalarConfig{
 	Name:        "CustomScalarType",
 	Description: "The `CustomScalarType` scalar type represents an ID Object.",
 	// Serialize serializes `CustomID` to string.
-	Serialize: func(value interface{}) interface{} {
+	Serialize: func(value any) any {
 		switch value := value.(type) {
 		case CustomID:
 			return value.String()
@@ -37,7 +37,7 @@ var CustomScalarType = graphql.NewScalar(graphql.ScalarConfig{
 		}
 	},
 	// ParseValue parses GraphQL variables from `string` to `CustomID`.
-	ParseValue: func(value interface{}) interface{} {
+	ParseValue: func(value any) any {
 		switch value := value.(type) {
 		case string:
 			return NewCustomID(value)
@@ -48,7 +48,7 @@ var CustomScalarType = graphql.NewScalar(graphql.ScalarConfig{
 		}
 	},
 	// ParseLiteral parses GraphQL AST value to `CustomID`.
-	ParseLiteral: func(valueAST ast.Value) interface{} {
+	ParseLiteral: func(valueAST ast.Value) any {
 		switch valueAST := valueAST.(type) {
 		case *ast.StringValue:
 			return NewCustomID(valueAST.Value)
@@ -84,7 +84,7 @@ func main() {
 							Type: CustomScalarType,
 						},
 					},
-					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					Resolve: func(p graphql.ResolveParams) (any, error) {
 						// id := p.Args["id"]
 						// log.Printf("id from arguments: %+v", id)
 						customers := []Customer{
@@ -127,7 +127,7 @@ func main() {
 	result := graphql.Do(graphql.Params{
 		Schema:        schema,
 		RequestString: query,
-		VariableValues: map[string]interface{}{
+		VariableValues: map[string]any{
 			"id": "5b42ba57289",
 		},
 	})

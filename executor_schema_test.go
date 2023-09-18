@@ -29,13 +29,13 @@ type testAuthor struct {
 	RecentArticle *testArticle `json:"recentArticle"`
 }
 type testArticle struct {
-	Id          string        `json:"id"`
-	IsPublished string        `json:"isPublished"`
-	Author      *testAuthor   `json:"author"`
-	Title       string        `json:"title"`
-	Body        string        `json:"body"`
-	Hidden      string        `json:"hidden"`
-	Keywords    []interface{} `json:"keywords"`
+	Id          string      `json:"id"`
+	IsPublished string      `json:"isPublished"`
+	Author      *testAuthor `json:"author"`
+	Title       string      `json:"title"`
+	Body        string      `json:"body"`
+	Hidden      string      `json:"hidden"`
+	Keywords    []any       `json:"keywords"`
 }
 
 func getPic(id int, width, height string) *testPic {
@@ -48,7 +48,7 @@ func getPic(id int, width, height string) *testPic {
 
 var johnSmith *testAuthor
 
-func article(id interface{}) *testArticle {
+func article(id any) *testArticle {
 	return &testArticle{
 		Id:          fmt.Sprintf("%v", id),
 		IsPublished: "true",
@@ -56,7 +56,7 @@ func article(id interface{}) *testArticle {
 		Title:       fmt.Sprintf("My Article %v", id),
 		Body:        "This is a post",
 		Hidden:      "This data is not exposed in the schema",
-		Keywords: []interface{}{
+		Keywords: []any{
 			"foo", "bar", 1, true, nil,
 		},
 	}
@@ -108,7 +108,7 @@ func TestExecutesUsingAComplexSchema(t *testing.T) {
 						Type: graphql.Int,
 					},
 				},
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					if author, ok := p.Source.(*testAuthor); ok {
 						width := fmt.Sprintf("%v", p.Args["width"])
 						height := fmt.Sprintf("%v", p.Args["height"])
@@ -159,14 +159,14 @@ func TestExecutesUsingAComplexSchema(t *testing.T) {
 						Type: graphql.ID,
 					},
 				},
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					id := p.Args["id"]
 					return article(id), nil
 				},
 			},
 			"feed": &graphql.Field{
 				Type: graphql.NewList(blogArticle),
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					return []*testArticle{
 						article(1),
 						article(2),
@@ -226,24 +226,24 @@ func TestExecutesUsingAComplexSchema(t *testing.T) {
 	`
 
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"article": map[string]interface{}{
+		Data: map[string]any{
+			"article": map[string]any{
 				"title": "My Article 1",
 				"body":  "This is a post",
-				"author": map[string]interface{}{
+				"author": map[string]any{
 					"id":   "123",
 					"name": "John Smith",
-					"pic": map[string]interface{}{
+					"pic": map[string]any{
 						"url":    "cdn://123",
 						"width":  int64(640),
 						"height": int64(480),
 					},
-					"recentArticle": map[string]interface{}{
+					"recentArticle": map[string]any{
 						"id":          "1",
 						"isPublished": bool(true),
 						"title":       "My Article 1",
 						"body":        "This is a post",
-						"keywords": []interface{}{
+						"keywords": []any{
 							"foo",
 							"bar",
 							"1",
@@ -255,44 +255,44 @@ func TestExecutesUsingAComplexSchema(t *testing.T) {
 				"id":          "1",
 				"isPublished": bool(true),
 			},
-			"feed": []interface{}{
-				map[string]interface{}{
+			"feed": []any{
+				map[string]any{
 					"id":    "1",
 					"title": "My Article 1",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "2",
 					"title": "My Article 2",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "3",
 					"title": "My Article 3",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "4",
 					"title": "My Article 4",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "5",
 					"title": "My Article 5",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "6",
 					"title": "My Article 6",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "7",
 					"title": "My Article 7",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "8",
 					"title": "My Article 8",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "9",
 					"title": "My Article 9",
 				},
-				map[string]interface{}{
+				map[string]any{
 					"id":    "10",
 					"title": "My Article 10",
 				},

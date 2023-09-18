@@ -75,7 +75,7 @@ var queryType = graphql.NewObject(
 						Type: graphql.Int,
 					},
 				},
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					id, ok := p.Args["id"].(int)
 					if ok {
 						// Find product
@@ -94,7 +94,7 @@ var queryType = graphql.NewObject(
 			"list": &graphql.Field{
 				Type:        graphql.NewList(productType),
 				Description: "Get product list",
-				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(params graphql.ResolveParams) (any, error) {
 					return products, nil
 				},
 			},
@@ -124,7 +124,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.Float),
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 				rand.Seed(time.Now().UnixNano())
 				product := Product{
 					ID:    int64(rand.Intn(100000)), // generate random ID
@@ -161,7 +161,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.Float,
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 				id, _ := params.Args["id"].(int)
 				name, nameOk := params.Args["name"].(string)
 				info, infoOk := params.Args["info"].(string)
@@ -198,7 +198,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.Int),
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 				id, _ := params.Args["id"].(int)
 				product := Product{}
 				for i, p := range products {

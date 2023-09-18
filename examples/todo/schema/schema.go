@@ -59,7 +59,7 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 
 				// marshall and cast the argument value
 				text, _ := params.Args["text"].(string)
@@ -101,7 +101,7 @@ var rootMutation = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.String),
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 				// marshall and cast the argument value
 				done, _ := params.Args["done"].(bool)
 				id, _ := params.Args["id"].(string)
@@ -143,7 +143,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.String,
 				},
 			},
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 
 				idQuery, isOK := params.Args["id"].(string)
 				if isOK {
@@ -162,7 +162,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 		"lastTodo": &graphql.Field{
 			Type:        todoType,
 			Description: "Last todo added",
-			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(params graphql.ResolveParams) (any, error) {
 				return TodoList[len(TodoList)-1], nil
 			},
 		},
@@ -173,7 +173,7 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 		"todoList": &graphql.Field{
 			Type:        graphql.NewList(todoType),
 			Description: "List of todos",
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(p graphql.ResolveParams) (any, error) {
 				return TodoList, nil
 			},
 		},

@@ -143,25 +143,25 @@ var QueryDocumentKeys = KeyMap{
 
 type stack struct {
 	Index   int
-	Keys    []interface{}
+	Keys    []any
 	Edits   []*edit
 	inSlice bool
 	Prev    *stack
 }
 type edit struct {
-	Key   interface{}
-	Value interface{}
+	Key   any
+	Value any
 }
 
 type VisitFuncParams struct {
-	Node      interface{}
-	Key       interface{}
+	Node      any
+	Key       any
 	Parent    ast.Node
-	Path      []interface{}
+	Path      []any
 	Ancestors []ast.Node
 }
 
-type VisitFunc func(p VisitFuncParams) (string, interface{})
+type VisitFunc func(p VisitFuncParams) (string, any)
 
 type NamedVisitFuncs struct {
 	Kind  VisitFunc // 1) Named visitors triggered when entering a node a specific kind.
@@ -178,26 +178,26 @@ type VisitorOptions struct {
 	LeaveKindMap map[string]VisitFunc // 4) Parallel visitors for entering and leaving nodes of a specific kind
 }
 
-func Visit(root ast.Node, visitorOpts *VisitorOptions, keyMap KeyMap) interface{} {
+func Visit(root ast.Node, visitorOpts *VisitorOptions, keyMap KeyMap) any {
 	visitorKeys := keyMap
 	if visitorKeys == nil {
 		visitorKeys = QueryDocumentKeys
 	}
 
 	var (
-		result         interface{}
+		result         any
 		newRoot        ast.Node = root
 		sstack         *stack
-		parent         interface{}
-		parentSlice    []interface{}
+		parent         any
+		parentSlice    []any
 		inSlice        = false
 		prevInSlice    = false
-		keys           = []interface{}{root}
+		keys           = []any{root}
 		index          = -1
 		edits          = []*edit{} // key-value
-		path           = []interface{}{}
-		ancestors      = []interface{}{}
-		ancestorsSlice = [][]interface{}{}
+		path           = []any{}
+		ancestors      = []any{}
+		ancestorsSlice = [][]any{}
 	)
 	// these algorithm must be simple!!!
 	// abstract algorithm
@@ -207,9 +207,9 @@ Loop:
 
 		isLeaving := (len(keys) == index)
 		var (
-			key       interface{} // string for structs or int for slices
-			node      interface{} // ast.Node or can be anything
-			nodeSlice []interface{}
+			key       any // string for structs or int for slices
+			node      any // ast.Node or can be anything
+			nodeSlice []any
 		)
 		isEdited := (isLeaving && len(edits) != 0)
 
@@ -272,13 +272,13 @@ Loop:
 				key = getFieldValue(keys, index)
 			}
 			// get node
-			var tmp interface{}
+			var tmp any
 			if !isNilNode(parent) {
 				tmp = parent
 			} else if len(parentSlice) != 0 {
 				tmp = parentSlice
 			} else {
-				node, nodeSlice = newRoot, []interface{}{}
+				node, nodeSlice = newRoot, []any{}
 			}
 			if tmp != nil {
 				fieldValue := getFieldValue(tmp, key)
@@ -306,7 +306,7 @@ Loop:
 		}
 
 		// get result from visitFn for a node if set
-		var result interface{}
+		var result any
 		resultIsUndefined := true
 		if !isNilNode(node) {
 			// Note that since user can potentially return a non-ast.Node from visit functions.
@@ -323,7 +323,7 @@ Loop:
 
 			var kind string
 			switch tmp := node.(type) {
-			case map[string]interface{}:
+			case map[string]any:
 				kind = tmp["Kind"].(string)
 			case ast.Node:
 				kind = tmp.GetKind()
@@ -391,7 +391,7 @@ Loop:
 			}
 
 			// replace keys
-			keys, index, edits = []interface{}{}, -1, []*edit{}
+			keys, index, edits = []any{}, -1, []*edit{}
 			if len(nodeSlice) > 0 {
 				inSlice = true
 				keys = append(keys, nodeSlice...)
@@ -421,28 +421,28 @@ Loop:
 	return result
 }
 
-func pop(a []interface{}) (interface{}, []interface{}) {
+func pop(a []any) (any, []any) {
 	if len(a) == 0 {
 		return nil, nil
 	}
 	return a[len(a)-1], a[:len(a)-1]
 }
 
-func popNodeSlice(a [][]interface{}) ([]interface{}, [][]interface{}) {
+func popNodeSlice(a [][]any) ([]any, [][]any) {
 	if len(a) == 0 {
 		return nil, nil
 	}
 	return a[len(a)-1], a[:len(a)-1]
 }
 
-func removeNodeByIndex(a []interface{}, pos int) []interface{} {
+func removeNodeByIndex(a []any, pos int) []any {
 	if pos < 0 || pos >= len(a) {
 		return a
 	}
 	return append(a[:pos], a[pos+1:]...)
 }
 
-func convertMap(src interface{}) (dest map[string]interface{}, err error) {
+func convertMap(src any) (dest map[string]any, err error) {
 	if src == nil {
 		return
 	}
@@ -460,7 +460,7 @@ func convertMap(src interface{}) (dest map[string]interface{}, err error) {
 // when obj type is struct, the key's type must be string
 // ... slice, ... int
 // ... map, ... any type. But the type satisfies map's key definition(feature: compare...)
-func getFieldValue(obj interface{}, key interface{}) interface{} {
+func getFieldValue(obj any, key any) any {
 	var value reflect.Value
 	val := reflect.ValueOf(obj)
 	if val.Kind() == reflect.Ptr {
@@ -485,7 +485,7 @@ func getFieldValue(obj interface{}, key interface{}) interface{} {
 }
 
 // currently only supports update struct field value
-func updateNodeField(src interface{}, targetName string, target interface{}) interface{} {
+func updateNodeField(src any, targetName string, target any) any {
 	var isPtr bool
 	srcVal := reflect.ValueOf(src)
 	// verify condition
@@ -520,8 +520,8 @@ func updateNodeField(src interface{}, targetName string, target interface{}) int
 	return srcVal.Interface()
 }
 
-func toSliceInterfaces(src interface{}) []interface{} {
-	var list []interface{}
+func toSliceInterfaces(src any) []any {
+	var list []any
 	value := reflect.ValueOf(src)
 	if value.Kind() == reflect.Ptr {
 		value = value.Elem()
@@ -535,7 +535,7 @@ func toSliceInterfaces(src interface{}) []interface{} {
 	return list
 }
 
-func isSlice(value interface{}) bool {
+func isSlice(value any) bool {
 	if value == nil {
 		return false
 	}
@@ -546,7 +546,7 @@ func isSlice(value interface{}) bool {
 	return false
 }
 
-func isStructNode(node interface{}) bool {
+func isStructNode(node any) bool {
 	if node == nil {
 		return false
 	}
@@ -563,7 +563,7 @@ func isStructNode(node interface{}) bool {
 
 // notice: type: Named, List or NonNull maybe map type
 // and it can't be asserted to ast.Node
-func isNode(node interface{}) bool {
+func isNode(node any) bool {
 	if node == nil {
 		return false
 	}
@@ -581,7 +581,7 @@ func isNode(node interface{}) bool {
 	return ok
 }
 
-func isNilNode(node interface{}) bool {
+func isNilNode(node any) bool {
 	if node == nil {
 		return true
 	}
@@ -603,10 +603,10 @@ func isNilNode(node interface{}) bool {
 //
 // If a prior visitor edits a node, no following visitors will see that node.
 func VisitInParallel(visitorOptsSlice ...*VisitorOptions) *VisitorOptions {
-	skipping := map[int]interface{}{}
+	skipping := map[int]any{}
 
 	return &VisitorOptions{
-		Enter: func(p VisitFuncParams) (string, interface{}) {
+		Enter: func(p VisitFuncParams) (string, any) {
 			for i, visitorOpts := range visitorOptsSlice {
 				if _, ok := skipping[i]; !ok {
 					node, ok := p.Node.(ast.Node)
@@ -629,7 +629,7 @@ func VisitInParallel(visitorOptsSlice ...*VisitorOptions) *VisitorOptions {
 			}
 			return ActionNoChange, nil
 		},
-		Leave: func(p VisitFuncParams) (string, interface{}) {
+		Leave: func(p VisitFuncParams) (string, any) {
 			for i, visitorOpts := range visitorOptsSlice {
 				skippedNode, ok := skipping[i]
 				if !ok {
@@ -658,7 +658,7 @@ func VisitInParallel(visitorOptsSlice ...*VisitorOptions) *VisitorOptions {
 // along with visiting visitor.
 func VisitWithTypeInfo(ttypeInfo typeInfo.TypeInfoI, visitorOpts *VisitorOptions) *VisitorOptions {
 	return &VisitorOptions{
-		Enter: func(p VisitFuncParams) (string, interface{}) {
+		Enter: func(p VisitFuncParams) (string, any) {
 			if node, ok := p.Node.(ast.Node); ok {
 				ttypeInfo.Enter(node)
 				fn := GetVisitFn(visitorOpts, node.GetKind(), false)
@@ -677,9 +677,9 @@ func VisitWithTypeInfo(ttypeInfo typeInfo.TypeInfoI, visitorOpts *VisitorOptions
 			}
 			return ActionNoChange, nil
 		},
-		Leave: func(p VisitFuncParams) (string, interface{}) {
+		Leave: func(p VisitFuncParams) (string, any) {
 			action := ActionNoChange
-			var result interface{}
+			var result any
 			if node, ok := p.Node.(ast.Node); ok {
 				fn := GetVisitFn(visitorOpts, node.GetKind(), true)
 				if fn != nil {

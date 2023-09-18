@@ -23,7 +23,7 @@ type TestSubscription struct {
 	Schema          graphql.Schema
 	Query           string
 	OperationName   string
-	Variables       map[string]interface{}
+	Variables       map[string]any
 	ExpectedResults []TestResponse
 }
 
@@ -129,7 +129,7 @@ func checkErrorStrings(t *testing.T, expected, actual []string) {
 }
 
 func formatJSON(data string) ([]byte, error) {
-	var v interface{}
+	var v any
 	if err := json.Unmarshal([]byte(data), &v); err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func formatJSON(data string) ([]byte, error) {
 	return formatted, nil
 }
 
-func pretty(x interface{}) string {
+func pretty(x any) string {
 	got, err := json.MarshalIndent(x, "", "  ")
 	if err != nil {
 		panic(err)

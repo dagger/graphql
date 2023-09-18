@@ -59,7 +59,7 @@ var queryType = graphql.NewObject(
 						Type: graphql.String,
 					},
 				},
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					idQuery, isOK := p.Args["id"].(string)
 					if isOK {
 						return data[idQuery], nil
@@ -101,7 +101,7 @@ func main() {
 }
 
 // Helper function to import json from file to map
-func importJSONDataFromFile(fileName string, result interface{}) (isOK bool) {
+func importJSONDataFromFile(fileName string, result any) (isOK bool) {
 	isOK = true
 	content, err := ioutil.ReadFile(fileName)
 	if err != nil {

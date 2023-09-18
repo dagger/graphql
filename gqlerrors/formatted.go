@@ -8,14 +8,14 @@ import (
 
 type ExtendedError interface {
 	error
-	Extensions() map[string]interface{}
+	Extensions() map[string]any
 }
 
 type FormattedError struct {
 	Message       string                    `json:"message"`
 	Locations     []location.SourceLocation `json:"locations"`
-	Path          []interface{}             `json:"path,omitempty"`
-	Extensions    map[string]interface{}    `json:"extensions,omitempty"`
+	Path          []any                     `json:"path,omitempty"`
+	Extensions    map[string]any            `json:"extensions,omitempty"`
 	originalError error
 }
 

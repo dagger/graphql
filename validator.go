@@ -231,12 +231,12 @@ func (ctx *ValidationContext) VariableUsages(node HasSelectionSet) []*VariableUs
 	visitor.Visit(node, visitor.VisitWithTypeInfo(typeInfo, &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.Variable: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.Variable); ok && node != nil {
 						usages = append(usages, &VariableUsage{
 							Node: node,

@@ -17,7 +17,7 @@ type Error struct {
 	Positions     []int
 	Locations     []location.SourceLocation
 	OriginalError error
-	Path          []interface{}
+	Path          []any
 }
 
 // implements Golang's built-in `error` interface
@@ -29,11 +29,11 @@ func NewError(message string, nodes []ast.Node, stack string, source *source.Sou
 	return newError(message, nodes, stack, source, positions, nil, origError)
 }
 
-func NewErrorWithPath(message string, nodes []ast.Node, stack string, source *source.Source, positions []int, path []interface{}, origError error) *Error {
+func NewErrorWithPath(message string, nodes []ast.Node, stack string, source *source.Source, positions []int, path []any, origError error) *Error {
 	return newError(message, nodes, stack, source, positions, path, origError)
 }
 
-func newError(message string, nodes []ast.Node, stack string, source *source.Source, positions []int, path []interface{}, origError error) *Error {
+func newError(message string, nodes []ast.Node, stack string, source *source.Source, positions []int, path []any, origError error) *Error {
 	if stack == "" && message != "" {
 		stack = message
 	}

@@ -20,8 +20,8 @@ import (
 func getVariableValues(
 	schema Schema,
 	definitionASTs []*ast.VariableDefinition,
-	inputs map[string]interface{}) (map[string]interface{}, error) {
-	values := map[string]interface{}{}
+	inputs map[string]any) (map[string]any, error) {
+	values := map[string]any{}
 	for _, defAST := range definitionASTs {
 		if defAST == nil || defAST.Variable == nil || defAST.Variable.Name == nil {
 			continue
@@ -40,7 +40,7 @@ func getVariableValues(
 // definitions and list of argument AST nodes.
 func getArgumentValues(
 	argDefs []*Argument, argASTs []*ast.Argument,
-	variableValues map[string]interface{}) map[string]interface{} {
+	variableValues map[string]any) map[string]any {
 
 	argASTMap := map[string]*ast.Argument{}
 	for _, argAST := range argASTs {
@@ -48,10 +48,10 @@ func getArgumentValues(
 			argASTMap[argAST.Name.Value] = argAST
 		}
 	}
-	results := map[string]interface{}{}
+	results := map[string]any{}
 	for _, argDef := range argDefs {
 		var (
-			tmp   interface{}
+			tmp   any
 			value ast.Value
 		)
 		if tmpValue, ok := argASTMap[argDef.PrivateName]; ok {
@@ -69,7 +69,7 @@ func getArgumentValues(
 
 // Given a variable definition, and any value of input, return a value which
 // adheres to the variable definition, or throw an error.
-func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, input interface{}) (interface{}, error) {
+func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, input any) (any, error) {
 	ttype, err := typeFromAST(schema, definitionAST.Type)
 	if err != nil {
 		return nil, err
@@ -130,7 +130,7 @@ func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, inpu
 }
 
 // Given a type and any value, return a runtime value coerced to match the type.
-func coerceValue(ttype Input, value interface{}) interface{} {
+func coerceValue(ttype Input, value any) any {
 	if isNullish(value) {
 		return nil
 	}
@@ -138,7 +138,7 @@ func coerceValue(ttype Input, value interface{}) interface{} {
 	case *NonNull:
 		return coerceValue(ttype.OfType, value)
 	case *List:
-		var values = []interface{}{}
+		var values = []any{}
 		valType := reflect.ValueOf(value)
 		if valType.Kind() == reflect.Slice {
 			for i := 0; i < valType.Len(); i++ {
@@ -149,10 +149,10 @@ func coerceValue(ttype Input, value interface{}) interface{} {
 		}
 		return append(values, coerceValue(ttype.OfType, value))
 	case *InputObject:
-		var obj = map[string]interface{}{}
-		valueMap, _ := value.(map[string]interface{})
+		var obj = map[string]any{}
+		valueMap, _ := value.(map[string]any)
 		if valueMap == nil {
-			valueMap = map[string]interface{}{}
+			valueMap = map[string]any{}
 		}
 
 		for name, field := range ttype.Fields() {
@@ -211,7 +211,7 @@ func typeFromAST(schema Schema, inputTypeAST ast.Type) (Type, error) {
 // Given a value and a GraphQL type, determine if the value will be
 // accepted for that type. This is primarily useful for validating the
 // runtime values of query variables.
-func isValidInputValue(value interface{}, ttype Input) (bool, []string) {
+func isValidInputValue(value any, ttype Input) (bool, []string) {
 	if isNullish(value) {
 		if ttype, ok := ttype.(*NonNull); ok {
 			if ttype.OfType.Name() != "" {
@@ -245,7 +245,7 @@ func isValidInputValue(value interface{}, ttype Input) (bool, []string) {
 	case *InputObject:
 		messagesReduce := []string{}
 
-		valueMap, ok := value.(map[string]interface{})
+		valueMap, ok := value.(map[string]any)
 		if !ok {
 			return false, []string{fmt.Sprintf(`Expected "%v", found not an object.`, ttype.Name())}
 		}
@@ -296,7 +296,7 @@ func isValidInputValue(value interface{}, ttype Input) (bool, []string) {
 }
 
 // Returns true if a value is null, undefined, or NaN.
-func isNullish(src interface{}) bool {
+func isNullish(src any) bool {
 	if src == nil {
 		return true
 	}
@@ -322,7 +322,7 @@ func isNullish(src interface{}) bool {
 }
 
 // Returns true if src is a slice or an array
-func isIterable(src interface{}) bool {
+func isIterable(src any) bool {
 	if src == nil {
 		return false
 	}
@@ -348,7 +348,7 @@ func isIterable(src interface{}) bool {
  * | Int / Float          | Number        |
  *
  */
-func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]interface{}) interface{} {
+func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any {
 	if valueAST == nil {
 		return nil
 	}
@@ -366,7 +366,7 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]interfac
 	case *NonNull:
 		return valueFromAST(valueAST, ttype.OfType, variables)
 	case *List:
-		values := []interface{}{}
+		values := []any{}
 		if valueAST, ok := valueAST.(*ast.ListValue); ok {
 			for _, itemAST := range valueAST.Values {
 				values = append(values, valueFromAST(itemAST, ttype.OfType, variables))
@@ -390,9 +390,9 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]interfac
 			}
 			fieldASTs[of.Name.Value] = of
 		}
-		obj := map[string]interface{}{}
+		obj := map[string]any{}
 		for name, field := range ttype.Fields() {
-			var value interface{}
+			var value any
 			if of, ok = fieldASTs[name]; ok {
 				value = valueFromAST(of.Value, field.Type, variables)
 			} else {
@@ -419,7 +419,7 @@ func invariant(condition bool, message string) error {
 	return nil
 }
 
-func invariantf(condition bool, format string, a ...interface{}) error {
+func invariantf(condition bool, format string, a ...any) error {
 	if !condition {
 		return gqlerrors.NewFormattedError(fmt.Sprintf(format, a...))
 	}

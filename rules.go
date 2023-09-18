@@ -58,7 +58,7 @@ func newValidationError(message string, nodes []ast.Node) *gqlerrors.Error {
 	)
 }
 
-func reportError(context *ValidationContext, message string, nodes []ast.Node) (string, interface{}) {
+func reportError(context *ValidationContext, message string, nodes []ast.Node) (string, any) {
 	context.ReportError(newValidationError(message, nodes))
 	return visitor.ActionNoChange, nil
 }
@@ -71,7 +71,7 @@ func ArgumentsOfCorrectTypeRule(context *ValidationContext) *ValidationRuleInsta
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Argument: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if argAST, ok := p.Node.(*ast.Argument); ok {
 						if argDef := context.Argument(); argDef != nil {
 							if isValid, messages := isValidLiteralValue(argDef.Type, argAST.Value); !isValid {
@@ -111,7 +111,7 @@ func DefaultValuesOfCorrectTypeRule(context *ValidationContext) *ValidationRuleI
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if varDefAST, ok := p.Node.(*ast.VariableDefinition); ok {
 						var (
 							name         string
@@ -148,12 +148,12 @@ func DefaultValuesOfCorrectTypeRule(context *ValidationContext) *ValidationRuleI
 				},
 			},
 			kinds.SelectionSet: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
@@ -208,7 +208,7 @@ func FieldsOnCorrectTypeRule(context *ValidationContext) *ValidationRuleInstance
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Field: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					var action = visitor.ActionNoChange
 					if node, ok := p.Node.(*ast.Field); ok {
 						var ttype Composite
@@ -371,7 +371,7 @@ func FragmentsOnCompositeTypesRule(context *ValidationContext) *ValidationRuleIn
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.InlineFragment: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.InlineFragment); ok {
 						ttype := context.Type()
 						if node.TypeCondition != nil && ttype != nil && !IsCompositeType(ttype) {
@@ -386,7 +386,7 @@ func FragmentsOnCompositeTypesRule(context *ValidationContext) *ValidationRuleIn
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.FragmentDefinition); ok {
 						ttype := context.Type()
 						if ttype != nil && !IsCompositeType(ttype) {
@@ -439,7 +439,7 @@ func KnownArgumentNamesRule(context *ValidationContext) *ValidationRuleInstance 
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Argument: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					var action = visitor.ActionNoChange
 					if node, ok := p.Node.(*ast.Argument); ok {
 						var argumentOf ast.Node
@@ -531,9 +531,9 @@ func KnownDirectivesRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Directive: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					var action = visitor.ActionNoChange
-					var result interface{}
+					var result any
 					if node, ok := p.Node.(*ast.Directive); ok {
 
 						nodeName := ""
@@ -672,9 +672,9 @@ func KnownFragmentNamesRule(context *ValidationContext) *ValidationRuleInstance 
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.FragmentSpread: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					var action = visitor.ActionNoChange
-					var result interface{}
+					var result any
 					if node, ok := p.Node.(*ast.FragmentSpread); ok {
 
 						fragmentName := ""
@@ -718,27 +718,27 @@ func KnownTypeNamesRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.ObjectDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.InterfaceDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.UnionDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.InputObjectDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.Named: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.Named); ok {
 						typeNameValue := ""
 						typeName := node.Name
@@ -777,7 +777,7 @@ func LoneAnonymousOperationRule(context *ValidationContext) *ValidationRuleInsta
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Document: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.Document); ok {
 						operationCount = 0
 						for _, definition := range node.Definitions {
@@ -790,7 +790,7 @@ func LoneAnonymousOperationRule(context *ValidationContext) *ValidationRuleInsta
 				},
 			},
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.OperationDefinition); ok {
 						if node.Name == nil && operationCount > 1 {
 							reportError(
@@ -899,12 +899,12 @@ func NoFragmentCyclesRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.FragmentDefinition); ok && node != nil {
 						nodeName := ""
 						if node.Name != nil {
@@ -941,11 +941,11 @@ func NoUndefinedVariablesRule(context *ValidationContext) *ValidationRuleInstanc
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Enter: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Enter: func(p visitor.VisitFuncParams) (string, any) {
 					variableNameDefined = map[string]bool{}
 					return visitor.ActionNoChange, nil
 				},
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					if operation, ok := p.Node.(*ast.OperationDefinition); ok && operation != nil {
 						usages := context.RecursiveVariableUsages(operation)
 
@@ -977,7 +977,7 @@ func NoUndefinedVariablesRule(context *ValidationContext) *ValidationRuleInstanc
 				},
 			},
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.VariableDefinition); ok && node != nil {
 						variableName := ""
 						if node.Variable != nil && node.Variable.Name != nil {
@@ -1007,7 +1007,7 @@ func NoUnusedFragmentsRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.OperationDefinition); ok && node != nil {
 						operationDefs = append(operationDefs, node)
 					}
@@ -1015,7 +1015,7 @@ func NoUnusedFragmentsRule(context *ValidationContext) *ValidationRuleInstance {
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.FragmentDefinition); ok && node != nil {
 						fragmentDefs = append(fragmentDefs, node)
 					}
@@ -1023,7 +1023,7 @@ func NoUnusedFragmentsRule(context *ValidationContext) *ValidationRuleInstance {
 				},
 			},
 			kinds.Document: {
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					fragmentNameUsed := map[string]bool{}
 					for _, operation := range operationDefs {
 						fragments := context.RecursivelyReferencedFragments(operation)
@@ -1079,11 +1079,11 @@ func NoUnusedVariablesRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Enter: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Enter: func(p visitor.VisitFuncParams) (string, any) {
 					variableDefs = []*ast.VariableDefinition{}
 					return visitor.ActionNoChange, nil
 				},
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					if operation, ok := p.Node.(*ast.OperationDefinition); ok && operation != nil {
 						variableNameUsed := map[string]bool{}
 						usages := context.RecursiveVariableUsages(operation)
@@ -1121,7 +1121,7 @@ func NoUnusedVariablesRule(context *ValidationContext) *ValidationRuleInstance {
 				},
 			},
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if def, ok := p.Node.(*ast.VariableDefinition); ok && def != nil {
 						variableDefs = append(variableDefs, def)
 					}
@@ -1196,7 +1196,7 @@ func PossibleFragmentSpreadsRule(context *ValidationContext) *ValidationRuleInst
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.InlineFragment: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.InlineFragment); ok && node != nil {
 						fragType := context.Type()
 						parentType, _ := context.ParentType().(Type)
@@ -1214,7 +1214,7 @@ func PossibleFragmentSpreadsRule(context *ValidationContext) *ValidationRuleInst
 				},
 			},
 			kinds.FragmentSpread: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.FragmentSpread); ok && node != nil {
 						fragName := ""
 						if node.Name != nil {
@@ -1250,7 +1250,7 @@ func ProvidedNonNullArgumentsRule(context *ValidationContext) *ValidationRuleIns
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Field: {
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					// Validate on leave to allow for deeper errors to appear first.
 					if fieldAST, ok := p.Node.(*ast.Field); ok && fieldAST != nil {
 						fieldDef := context.FieldDef()
@@ -1290,7 +1290,7 @@ func ProvidedNonNullArgumentsRule(context *ValidationContext) *ValidationRuleIns
 				},
 			},
 			kinds.Directive: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					// Validate on leave to allow for deeper errors to appear first.
 
 					if directiveAST, ok := p.Node.(*ast.Directive); ok && directiveAST != nil {
@@ -1346,7 +1346,7 @@ func ScalarLeafsRule(context *ValidationContext) *ValidationRuleInstance {
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Field: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.Field); ok && node != nil {
 						nodeName := ""
 						if node.Name != nil {
@@ -1391,19 +1391,19 @@ func UniqueArgumentNamesRule(context *ValidationContext) *ValidationRuleInstance
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.Field: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					knownArgNames = map[string]*ast.Name{}
 					return visitor.ActionNoChange, nil
 				},
 			},
 			kinds.Directive: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					knownArgNames = map[string]*ast.Name{}
 					return visitor.ActionNoChange, nil
 				},
 			},
 			kinds.Argument: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.Argument); ok {
 						argName := ""
 						if node.Name != nil {
@@ -1438,12 +1438,12 @@ func UniqueFragmentNamesRule(context *ValidationContext) *ValidationRuleInstance
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.FragmentDefinition); ok && node != nil {
 						fragmentName := ""
 						if node.Name != nil {
@@ -1480,19 +1480,19 @@ func UniqueInputFieldNamesRule(context *ValidationContext) *ValidationRuleInstan
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.ObjectValue: {
-				Enter: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Enter: func(p visitor.VisitFuncParams) (string, any) {
 					knownNameStack = append(knownNameStack, knownNames)
 					knownNames = map[string]*ast.Name{}
 					return visitor.ActionNoChange, nil
 				},
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					// pop
 					knownNames, knownNameStack = knownNameStack[len(knownNameStack)-1], knownNameStack[:len(knownNameStack)-1]
 					return visitor.ActionNoChange, nil
 				},
 			},
 			kinds.ObjectField: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.ObjectField); ok {
 						fieldName := ""
 						if node.Name != nil {
@@ -1528,7 +1528,7 @@ func UniqueOperationNamesRule(context *ValidationContext) *ValidationRuleInstanc
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.OperationDefinition); ok && node != nil {
 						operationName := ""
 						if node.Name != nil {
@@ -1552,7 +1552,7 @@ func UniqueOperationNamesRule(context *ValidationContext) *ValidationRuleInstanc
 				},
 			},
 			kinds.FragmentDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					return visitor.ActionSkip, nil
 				},
 			},
@@ -1572,7 +1572,7 @@ func UniqueVariableNamesRule(context *ValidationContext) *ValidationRuleInstance
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.OperationDefinition); ok && node != nil {
 						knownVariableNames = map[string]*ast.Name{}
 					}
@@ -1580,7 +1580,7 @@ func UniqueVariableNamesRule(context *ValidationContext) *ValidationRuleInstance
 				},
 			},
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.VariableDefinition); ok && node != nil {
 						variableName := ""
 						var variableNameAST *ast.Name
@@ -1617,7 +1617,7 @@ func VariablesAreInputTypesRule(context *ValidationContext) *ValidationRuleInsta
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if node, ok := p.Node.(*ast.VariableDefinition); ok && node != nil {
 						ttype, _ := typeFromAST(*context.Schema(), node.Type)
 
@@ -1664,11 +1664,11 @@ func VariablesInAllowedPositionRule(context *ValidationContext) *ValidationRuleI
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.OperationDefinition: {
-				Enter: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Enter: func(p visitor.VisitFuncParams) (string, any) {
 					varDefMap = map[string]*ast.VariableDefinition{}
 					return visitor.ActionNoChange, nil
 				},
-				Leave: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Leave: func(p visitor.VisitFuncParams) (string, any) {
 					if operation, ok := p.Node.(*ast.OperationDefinition); ok {
 
 						usages := context.RecursiveVariableUsages(operation)
@@ -1699,7 +1699,7 @@ func VariablesInAllowedPositionRule(context *ValidationContext) *ValidationRuleI
 				},
 			},
 			kinds.VariableDefinition: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if varDefAST, ok := p.Node.(*ast.VariableDefinition); ok {
 						defName := ""
 						if varDefAST.Variable != nil && varDefAST.Variable.Name != nil {

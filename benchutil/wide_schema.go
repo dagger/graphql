@@ -18,7 +18,7 @@ func WideSchemaWithXFieldsAndYItems(x int, y int) graphql.Schema {
 		Fields: graphql.Fields{
 			"wide": {
 				Type: graphql.NewList(wide),
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					out := make([]struct{}, 0, y)
 					for i := 0; i < y; i++ {
 						out = append(out, struct{}{})
@@ -89,41 +89,41 @@ func generateFieldNameFromX(x int) string {
 	return out
 }
 
-func generateWideResolveFromX(x int) func(p graphql.ResolveParams) (interface{}, error) {
+func generateWideResolveFromX(x int) func(p graphql.ResolveParams) (any, error) {
 	switch x % 8 {
 	case 0:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return fmt.Sprint(x), nil
 		}
 	case 1:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return fmt.Sprint(x), nil
 		}
 	case 2:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return x, nil
 		}
 	case 3:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return x, nil
 		}
 	case 4:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return float64(x), nil
 		}
 	case 5:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			return float64(x), nil
 		}
 	case 6:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			if x%2 == 0 {
 				return false, nil
 			}
 			return true, nil
 		}
 	case 7:
-		return func(p graphql.ResolveParams) (interface{}, error) {
+		return func(p graphql.ResolveParams) (any, error) {
 			if x%2 == 0 {
 				return false, nil
 			}

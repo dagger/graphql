@@ -5,7 +5,7 @@ import (
 )
 
 type Value interface {
-	GetValue() interface{}
+	GetValue() any
 	GetKind() string
 	GetLoc() *Location
 }
@@ -44,11 +44,11 @@ func (v *Variable) GetLoc() *Location {
 }
 
 // GetValue alias to Variable.GetName()
-func (v *Variable) GetValue() interface{} {
+func (v *Variable) GetValue() any {
 	return v.GetName()
 }
 
-func (v *Variable) GetName() interface{} {
+func (v *Variable) GetName() any {
 	return v.Name
 }
 
@@ -78,7 +78,7 @@ func (v *IntValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *IntValue) GetValue() interface{} {
+func (v *IntValue) GetValue() any {
 	return v.Value
 }
 
@@ -108,7 +108,7 @@ func (v *FloatValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *FloatValue) GetValue() interface{} {
+func (v *FloatValue) GetValue() any {
 	return v.Value
 }
 
@@ -138,7 +138,7 @@ func (v *StringValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *StringValue) GetValue() interface{} {
+func (v *StringValue) GetValue() any {
 	return v.Value
 }
 
@@ -168,7 +168,7 @@ func (v *BooleanValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *BooleanValue) GetValue() interface{} {
+func (v *BooleanValue) GetValue() any {
 	return v.Value
 }
 
@@ -198,7 +198,7 @@ func (v *EnumValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *EnumValue) GetValue() interface{} {
+func (v *EnumValue) GetValue() any {
 	return v.Value
 }
 
@@ -229,11 +229,11 @@ func (v *ListValue) GetLoc() *Location {
 }
 
 // GetValue alias to ListValue.GetValues()
-func (v *ListValue) GetValue() interface{} {
+func (v *ListValue) GetValue() any {
 	return v.GetValues()
 }
 
-func (v *ListValue) GetValues() interface{} {
+func (v *ListValue) GetValues() any {
 	// TODO: verify ObjectValue.GetValue()
 	return v.Values
 }
@@ -264,7 +264,7 @@ func (v *ObjectValue) GetLoc() *Location {
 	return v.Loc
 }
 
-func (v *ObjectValue) GetValue() interface{} {
+func (v *ObjectValue) GetValue() any {
 	// TODO: verify ObjectValue.GetValue()
 	return v.Fields
 }
@@ -297,6 +297,6 @@ func (f *ObjectField) GetLoc() *Location {
 	return f.Loc
 }
 
-func (f *ObjectField) GetValue() interface{} {
+func (f *ObjectField) GetValue() any {
 	return f.Value
 }

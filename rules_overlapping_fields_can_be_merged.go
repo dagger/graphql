@@ -18,7 +18,7 @@ func fieldsConflictMessage(responseName string, reason conflictReason) string {
 	)
 }
 
-func fieldsConflictReasonMessage(message interface{}) string {
+func fieldsConflictReasonMessage(message any) string {
 	switch reason := message.(type) {
 	case string:
 		return reason
@@ -58,7 +58,7 @@ func OverlappingFieldsCanBeMergedRule(context *ValidationContext) *ValidationRul
 	visitorOpts := &visitor.VisitorOptions{
 		KindFuncMap: map[string]visitor.NamedVisitFuncs{
 			kinds.SelectionSet: {
-				Kind: func(p visitor.VisitFuncParams) (string, interface{}) {
+				Kind: func(p visitor.VisitFuncParams) (string, any) {
 					if selectionSet, ok := p.Node.(*ast.SelectionSet); ok && selectionSet != nil {
 						parentType, _ := context.ParentType().(Named)
 
@@ -539,7 +539,7 @@ func (rule *overlappingFieldsCanBeMergedRule) getReferencedFieldsAndFragmentName
 
 type conflictReason struct {
 	Name    string
-	Message interface{} // conflictReason || []conflictReason
+	Message any // conflictReason || []conflictReason
 }
 type conflict struct {
 	Reason      conflictReason

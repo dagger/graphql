@@ -52,7 +52,7 @@ func NewNullString(value string) *NullString {
 }
 
 // SerializeNullString serializes `NullString` to a string
-func SerializeNullString(value interface{}) interface{} {
+func SerializeNullString(value any) any {
 	switch value := value.(type) {
 	case NullString:
 		return value.String
@@ -65,7 +65,7 @@ func SerializeNullString(value interface{}) interface{} {
 }
 
 // ParseNullString parses GraphQL variables from `string` to `CustomID`
-func ParseNullString(value interface{}) interface{} {
+func ParseNullString(value any) any {
 	switch value := value.(type) {
 	case string:
 		return NewNullString(value)
@@ -77,7 +77,7 @@ func ParseNullString(value interface{}) interface{} {
 }
 
 // ParseLiteralNullString parses GraphQL AST value to `NullString`.
-func ParseLiteralNullString(valueAST ast.Value) interface{} {
+func ParseLiteralNullString(valueAST ast.Value) any {
 	switch valueAST := valueAST.(type) {
 	case *ast.StringValue:
 		return NewNullString(valueAST.Value)
@@ -134,7 +134,7 @@ func main() {
 							Type: NullableString,
 						},
 					},
-					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					Resolve: func(p graphql.ResolveParams) (any, error) {
 						dog, dogOk := p.Args["favorite_dog"].(*NullString)
 						people := []Person{
 							Person{Name: "Alice", FavoriteDog: NewNullString("Yorkshire Terrier")},

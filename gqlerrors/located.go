@@ -8,7 +8,7 @@ import (
 // NewLocatedError creates a graphql.Error with location info
 // @deprecated 0.4.18
 // Already exists in `graphql.NewLocatedError()`
-func NewLocatedError(err interface{}, nodes []ast.Node) *Error {
+func NewLocatedError(err any, nodes []ast.Node) *Error {
 	var origError error
 	message := "An unknown error occurred."
 	if err, ok := err.(error); ok {

@@ -32,7 +32,7 @@ var queryType = graphql.NewObject(
 		Fields: graphql.Fields{
 			"me": &graphql.Field{
 				Type: userType,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					return p.Context.Value("currentUser"), nil
 				},
 			},

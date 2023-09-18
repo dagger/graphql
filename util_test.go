@@ -68,7 +68,7 @@ func TestBindFields(t *testing.T) {
 	fields := graphql.Fields{
 		"person": &graphql.Field{
 			Type: personType,
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(p graphql.ResolveParams) (any, error) {
 				return personSource, nil
 			},
 		},
@@ -129,7 +129,7 @@ func TestBindArg(t *testing.T) {
 			Type: friendObj,
 			//it can be added more than one since it's a slice
 			Args: graphql.BindArg(Friend{}, "name"),
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			Resolve: func(p graphql.ResolveParams) (any, error) {
 				if name, ok := p.Args["name"].(string); ok {
 					for _, friend := range friendSource {
 						if friend.Name == name {

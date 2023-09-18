@@ -31,7 +31,7 @@ func TestTypeSystem_Scalar_ParseLiteralOutputDateTime(t *testing.T) {
 	t1, _ := time.Parse(time.RFC3339, "2017-07-23T03:46:56.647Z")
 	for name, testCase := range map[string]struct {
 		Literal  ast.Value
-		Expected interface{}
+		Expected any
 	}{
 		"String": {
 			Literal: &ast.StringValue{

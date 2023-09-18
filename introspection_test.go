@@ -27,39 +27,39 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating Schema: %v", err.Error())
 	}
-	expectedDataSubSet := map[string]interface{}{
-		"__schema": map[string]interface{}{
+	expectedDataSubSet := map[string]any{
+		"__schema": map[string]any{
 			"mutationType":     nil,
 			"subscriptionType": nil,
-			"queryType": map[string]interface{}{
+			"queryType": map[string]any{
 				"name": "QueryRoot",
 			},
-			"types": []interface{}{
-				map[string]interface{}{
+			"types": []any{
+				map[string]any{
 					"kind":          "OBJECT",
 					"name":          "QueryRoot",
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__Schema",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "types",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "LIST",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind": "NON_NULL",
 										"name": nil,
-										"ofType": map[string]interface{}{
+										"ofType": map[string]any{
 											"kind": "OBJECT",
 											"name": "__Type",
 										},
@@ -69,13 +69,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "queryType",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "OBJECT",
 									"name": "__Type",
 								},
@@ -83,39 +83,39 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "mutationType",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "OBJECT",
 								"name": "__Type",
 							},
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "subscriptionType",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "OBJECT",
 								"name": "__Type",
 							},
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "directives",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "LIST",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind": "NON_NULL",
 										"name": nil,
-										"ofType": map[string]interface{}{
+										"ofType": map[string]any{
 											"kind": "OBJECT",
 											"name": "__Directive",
 										},
@@ -127,21 +127,21 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__Type",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "kind",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "ENUM",
 									"name":   "__TypeKind",
 									"ofType": nil,
@@ -150,10 +150,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "name",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -161,10 +161,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "description",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -172,12 +172,12 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "fields",
-							"args": []interface{}{
-								map[string]interface{}{
+							"args": []any{
+								map[string]any{
 									"name": "includeDeprecated",
-									"type": map[string]interface{}{
+									"type": map[string]any{
 										"kind":   "SCALAR",
 										"name":   "Boolean",
 										"ofType": nil,
@@ -185,13 +185,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 									"defaultValue": "false",
 								},
 							},
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "NON_NULL",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind":   "OBJECT",
 										"name":   "__Field",
 										"ofType": nil,
@@ -201,16 +201,16 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "interfaces",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "NON_NULL",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind":   "OBJECT",
 										"name":   "__Type",
 										"ofType": nil,
@@ -220,16 +220,16 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "possibleTypes",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "NON_NULL",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind":   "OBJECT",
 										"name":   "__Type",
 										"ofType": nil,
@@ -239,12 +239,12 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "enumValues",
-							"args": []interface{}{
-								map[string]interface{}{
+							"args": []any{
+								map[string]any{
 									"name": "includeDeprecated",
-									"type": map[string]interface{}{
+									"type": map[string]any{
 										"kind":   "SCALAR",
 										"name":   "Boolean",
 										"ofType": nil,
@@ -252,13 +252,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 									"defaultValue": "false",
 								},
 							},
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "NON_NULL",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind":   "OBJECT",
 										"name":   "__EnumValue",
 										"ofType": nil,
@@ -268,16 +268,16 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "inputFields",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "NON_NULL",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind":   "OBJECT",
 										"name":   "__InputValue",
 										"ofType": nil,
@@ -287,10 +287,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "ofType",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "OBJECT",
 								"name":   "__Type",
 								"ofType": nil,
@@ -300,53 +300,53 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind":        "ENUM",
 					"name":        "__TypeKind",
 					"fields":      nil,
 					"inputFields": nil,
 					"interfaces":  nil,
-					"enumValues": []interface{}{
-						map[string]interface{}{
+					"enumValues": []any{
+						map[string]any{
 							"name":              "SCALAR",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "OBJECT",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "INTERFACE",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "UNION",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "ENUM",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "INPUT_OBJECT",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "LIST",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "NON_NULL",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
@@ -354,7 +354,7 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 					},
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind":          "SCALAR",
 					"name":          "String",
 					"fields":        nil,
@@ -363,7 +363,7 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind":          "SCALAR",
 					"name":          "Boolean",
 					"fields":        nil,
@@ -372,17 +372,17 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__Field",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "name",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "String",
 									"ofType": nil,
@@ -391,10 +391,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "description",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -402,19 +402,19 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "args",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "LIST",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind": "NON_NULL",
 										"name": nil,
-										"ofType": map[string]interface{}{
+										"ofType": map[string]any{
 											"kind": "OBJECT",
 											"name": "__InputValue",
 										},
@@ -424,13 +424,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "type",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "OBJECT",
 									"name":   "__Type",
 									"ofType": nil,
@@ -439,13 +439,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "isDeprecated",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -454,10 +454,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "deprecationReason",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -467,21 +467,21 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__InputValue",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "name",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "String",
 									"ofType": nil,
@@ -490,10 +490,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "description",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -501,13 +501,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "type",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "OBJECT",
 									"name":   "__Type",
 									"ofType": nil,
@@ -516,10 +516,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "defaultValue",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -529,21 +529,21 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__EnumValue",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "name",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "String",
 									"ofType": nil,
@@ -552,10 +552,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "description",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -563,13 +563,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "isDeprecated",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -578,10 +578,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "deprecationReason",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -591,21 +591,21 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind": "OBJECT",
 					"name": "__Directive",
-					"fields": []interface{}{
-						map[string]interface{}{
+					"fields": []any{
+						map[string]any{
 							"name": "name",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "String",
 									"ofType": nil,
@@ -614,10 +614,10 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "description",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
@@ -625,19 +625,19 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "locations",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "LIST",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind": "NON_NULL",
 										"name": nil,
-										"ofType": map[string]interface{}{
+										"ofType": map[string]any{
 											"kind": "ENUM",
 											"name": "__DirectiveLocation",
 										},
@@ -647,19 +647,19 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "args",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind": "LIST",
 									"name": nil,
-									"ofType": map[string]interface{}{
+									"ofType": map[string]any{
 										"kind": "NON_NULL",
 										"name": nil,
-										"ofType": map[string]interface{}{
+										"ofType": map[string]any{
 											"kind": "OBJECT",
 											"name": "__InputValue",
 										},
@@ -669,13 +669,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "onOperation",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -684,13 +684,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      true,
 							"deprecationReason": "Use `locations`.",
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "onFragment",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -699,13 +699,13 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 							"isDeprecated":      true,
 							"deprecationReason": "Use `locations`.",
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "onField",
-							"args": []interface{}{},
-							"type": map[string]interface{}{
+							"args": []any{},
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -716,48 +716,48 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 						},
 					},
 					"inputFields":   nil,
-					"interfaces":    []interface{}{},
+					"interfaces":    []any{},
 					"enumValues":    nil,
 					"possibleTypes": nil,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"kind":        "ENUM",
 					"name":        "__DirectiveLocation",
 					"fields":      nil,
 					"inputFields": nil,
 					"interfaces":  nil,
-					"enumValues": []interface{}{
-						map[string]interface{}{
+					"enumValues": []any{
+						map[string]any{
 							"name":              "QUERY",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "MUTATION",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "SUBSCRIPTION",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "FIELD",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "FRAGMENT_DEFINITION",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "FRAGMENT_SPREAD",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name":              "INLINE_FRAGMENT",
 							"isDeprecated":      false,
 							"deprecationReason": nil,
@@ -766,22 +766,22 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 					"possibleTypes": nil,
 				},
 			},
-			"directives": []interface{}{
-				map[string]interface{}{
+			"directives": []any{
+				map[string]any{
 					"name": "include",
-					"locations": []interface{}{
+					"locations": []any{
 						"FIELD",
 						"FRAGMENT_SPREAD",
 						"INLINE_FRAGMENT",
 					},
-					"args": []interface{}{
-						map[string]interface{}{
+					"args": []any{
+						map[string]any{
 							"defaultValue": nil,
 							"name":         "if",
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -794,21 +794,21 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 					"onFragment":  true,
 					"onField":     true,
 				},
-				map[string]interface{}{
+				map[string]any{
 					"name": "skip",
-					"locations": []interface{}{
+					"locations": []any{
 						"FIELD",
 						"FRAGMENT_SPREAD",
 						"INLINE_FRAGMENT",
 					},
-					"args": []interface{}{
-						map[string]interface{}{
+					"args": []any{
+						map[string]any{
 							"defaultValue": nil,
 							"name":         "if",
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind": "NON_NULL",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "Boolean",
 									"ofType": nil,
@@ -828,7 +828,7 @@ func TestIntrospection_ExecutesAnIntrospectionQuery(t *testing.T) {
 		Schema:        emptySchema,
 		RequestString: testutil.IntrospectionQuery,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expectedDataSubSet) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expectedDataSubSet) {
 		t.Fatalf("unexpected, result does not contain subset of expected data")
 	}
 }
@@ -858,7 +858,7 @@ func TestIntrospection_ExecutesAnInputObject(t *testing.T) {
 						Type: testInputObject,
 					},
 				},
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				Resolve: func(p graphql.ResolveParams) (any, error) {
 					return p.Args["complex"], nil
 				},
 			},
@@ -902,28 +902,28 @@ func TestIntrospection_ExecutesAnInputObject(t *testing.T) {
         }
       }
     `
-	expectedDataSubSet := map[string]interface{}{
-		"__schema": map[string]interface{}{
-			"types": []interface{}{
-				map[string]interface{}{
+	expectedDataSubSet := map[string]any{
+		"__schema": map[string]any{
+			"types": []any{
+				map[string]any{
 					"kind": "INPUT_OBJECT",
 					"name": "TestInputObject",
-					"inputFields": []interface{}{
-						map[string]interface{}{
+					"inputFields": []any{
+						map[string]any{
 							"name": "a",
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind":   "SCALAR",
 								"name":   "String",
 								"ofType": nil,
 							},
 							"defaultValue": `"foo"`,
 						},
-						map[string]interface{}{
+						map[string]any{
 							"name": "b",
-							"type": map[string]interface{}{
+							"type": map[string]any{
 								"kind": "LIST",
 								"name": nil,
-								"ofType": map[string]interface{}{
+								"ofType": map[string]any{
 									"kind":   "SCALAR",
 									"name":   "String",
 									"ofType": nil,
@@ -941,7 +941,7 @@ func TestIntrospection_ExecutesAnInputObject(t *testing.T) {
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expectedDataSubSet) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expectedDataSubSet) {
 		t.Fatalf("unexpected, result does not contain subset of expected data")
 	}
 }
@@ -970,8 +970,8 @@ func TestIntrospection_SupportsThe__TypeRootField(t *testing.T) {
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"__type": map[string]interface{}{
+		Data: map[string]any{
+			"__type": map[string]any{
 				"name": "TestType",
 			},
 		},
@@ -1017,16 +1017,16 @@ func TestIntrospection_IdentifiesDeprecatedFields(t *testing.T) {
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"__type": map[string]interface{}{
+		Data: map[string]any{
+			"__type": map[string]any{
 				"name": "TestType",
-				"fields": []interface{}{
-					map[string]interface{}{
+				"fields": []any{
+					map[string]any{
 						"name":              "nonDeprecated",
 						"isDeprecated":      false,
 						"deprecationReason": nil,
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":              "deprecated",
 						"isDeprecated":      true,
 						"deprecationReason": "Removed in 1.0",
@@ -1039,7 +1039,7 @@ func TestIntrospection_IdentifiesDeprecatedFields(t *testing.T) {
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }
@@ -1080,24 +1080,24 @@ func TestIntrospection_RespectsTheIncludeDeprecatedParameterForFields(t *testing
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"__type": map[string]interface{}{
+		Data: map[string]any{
+			"__type": map[string]any{
 				"name": "TestType",
-				"trueFields": []interface{}{
-					map[string]interface{}{
+				"trueFields": []any{
+					map[string]any{
 						"name": "nonDeprecated",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "deprecated",
 					},
 				},
-				"falseFields": []interface{}{
-					map[string]interface{}{
+				"falseFields": []any{
+					map[string]any{
 						"name": "nonDeprecated",
 					},
 				},
-				"omittedFields": []interface{}{
-					map[string]interface{}{
+				"omittedFields": []any{
+					map[string]any{
 						"name": "nonDeprecated",
 					},
 				},
@@ -1108,7 +1108,7 @@ func TestIntrospection_RespectsTheIncludeDeprecatedParameterForFields(t *testing
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }
@@ -1156,21 +1156,21 @@ func TestIntrospection_IdentifiesDeprecatedEnumValues(t *testing.T) {
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"__type": map[string]interface{}{
+		Data: map[string]any{
+			"__type": map[string]any{
 				"name": "TestEnum",
-				"enumValues": []interface{}{
-					map[string]interface{}{
+				"enumValues": []any{
+					map[string]any{
 						"name":              "NONDEPRECATED",
 						"isDeprecated":      false,
 						"deprecationReason": nil,
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":              "DEPRECATED",
 						"isDeprecated":      true,
 						"deprecationReason": "Removed in 1.0",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":              "ALSONONDEPRECATED",
 						"isDeprecated":      false,
 						"deprecationReason": nil,
@@ -1183,7 +1183,7 @@ func TestIntrospection_IdentifiesDeprecatedEnumValues(t *testing.T) {
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }
@@ -1235,33 +1235,33 @@ func TestIntrospection_RespectsTheIncludeDeprecatedParameterForEnumValues(t *tes
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"__type": map[string]interface{}{
+		Data: map[string]any{
+			"__type": map[string]any{
 				"name": "TestEnum",
-				"trueValues": []interface{}{
-					map[string]interface{}{
+				"trueValues": []any{
+					map[string]any{
 						"name": "NONDEPRECATED",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "DEPRECATED",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "ALSONONDEPRECATED",
 					},
 				},
-				"falseValues": []interface{}{
-					map[string]interface{}{
+				"falseValues": []any{
+					map[string]any{
 						"name": "NONDEPRECATED",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "ALSONONDEPRECATED",
 					},
 				},
-				"omittedValues": []interface{}{
-					map[string]interface{}{
+				"omittedValues": []any{
+					map[string]any{
 						"name": "NONDEPRECATED",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "ALSONONDEPRECATED",
 					},
 				},
@@ -1272,7 +1272,7 @@ func TestIntrospection_RespectsTheIncludeDeprecatedParameterForEnumValues(t *tes
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }
@@ -1349,33 +1349,33 @@ func TestIntrospection_ExposesDescriptionsOnTypesAndFields(t *testing.T) {
     `
 
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"schemaType": map[string]interface{}{
+		Data: map[string]any{
+			"schemaType": map[string]any{
 				"name": "__Schema",
 				"description": `A GraphQL Schema defines the capabilities of a GraphQL ` +
 					`server. It exposes all available types and directives on ` +
 					`the server, as well as the entry points for query, mutation, ` +
 					`and subscription operations.`,
-				"fields": []interface{}{
-					map[string]interface{}{
+				"fields": []any{
+					map[string]any{
 						"name":        "types",
 						"description": "A list of all types supported by this server.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "queryType",
 						"description": "The type that query operations will be rooted at.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "mutationType",
 						"description": "If this server supports mutation, the type that " +
 							"mutation operations will be rooted at.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name": "subscriptionType",
 						"description": "If this server supports subscription, the type that " +
 							"subscription operations will be rooted at.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "directives",
 						"description": "A list of all directives supported by this server.",
 					},
@@ -1387,7 +1387,7 @@ func TestIntrospection_ExposesDescriptionsOnTypesAndFields(t *testing.T) {
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }
@@ -1420,40 +1420,40 @@ func TestIntrospection_ExposesDescriptionsOnEnums(t *testing.T) {
       }
     `
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"typeKindType": map[string]interface{}{
+		Data: map[string]any{
+			"typeKindType": map[string]any{
 				"name":        "__TypeKind",
 				"description": "An enum describing what kind of type a given `__Type` is",
-				"enumValues": []interface{}{
-					map[string]interface{}{
+				"enumValues": []any{
+					map[string]any{
 						"name":        "SCALAR",
 						"description": "Indicates this type is a scalar.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "OBJECT",
 						"description": "Indicates this type is an object. `fields` and `interfaces` are valid fields.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "INTERFACE",
 						"description": "Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "UNION",
 						"description": "Indicates this type is a union. `possibleTypes` is a valid field.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "ENUM",
 						"description": "Indicates this type is an enum. `enumValues` is a valid field.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "INPUT_OBJECT",
 						"description": "Indicates this type is an input object. `inputFields` is a valid field.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "LIST",
 						"description": "Indicates this type is a list. `ofType` is a valid field.",
 					},
-					map[string]interface{}{
+					map[string]any{
 						"name":        "NON_NULL",
 						"description": "Indicates this type is a non-null. `ofType` is a valid field.",
 					},
@@ -1465,7 +1465,7 @@ func TestIntrospection_ExposesDescriptionsOnEnums(t *testing.T) {
 		Schema:        schema,
 		RequestString: query,
 	})
-	if !testutil.ContainSubset(result.Data.(map[string]interface{}), expected.Data.(map[string]interface{})) {
+	if !testutil.ContainSubset(result.Data.(map[string]any), expected.Data.(map[string]any)) {
 		t.Fatalf("Unexpected result, Diff: %v", testutil.Diff(expected, result))
 	}
 }

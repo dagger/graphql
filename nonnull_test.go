@@ -15,32 +15,32 @@ var nonNullSyncError = "nonNullSync"
 var promiseError = "promise"
 var nonNullPromiseError = "nonNullPromise"
 
-var throwingData = map[string]interface{}{
-	"sync": func() interface{} {
+var throwingData = map[string]any{
+	"sync": func() any {
 		panic(syncError)
 	},
-	"nonNullSync": func() interface{} {
+	"nonNullSync": func() any {
 		panic(nonNullSyncError)
 	},
-	"promise": func() interface{} {
+	"promise": func() any {
 		panic(promiseError)
 	},
-	"nonNullPromise": func() interface{} {
+	"nonNullPromise": func() any {
 		panic(nonNullPromiseError)
 	},
 }
 
-var nullingData = map[string]interface{}{
-	"sync": func() interface{} {
+var nullingData = map[string]any{
+	"sync": func() any {
 		return nil
 	},
-	"nonNullSync": func() interface{} {
+	"nonNullSync": func() any {
 		return nil
 	},
-	"promise": func() interface{} {
+	"promise": func() any {
 		return nil
 	},
-	"nonNullPromise": func() interface{} {
+	"nonNullPromise": func() any {
 		return nil
 	},
 }
@@ -68,29 +68,29 @@ var nonNullTestSchema, _ = graphql.NewSchema(graphql.SchemaConfig{
 })
 
 func init() {
-	throwingData["nest"] = func() interface{} {
+	throwingData["nest"] = func() any {
 		return throwingData
 	}
-	throwingData["nonNullNest"] = func() interface{} {
+	throwingData["nonNullNest"] = func() any {
 		return throwingData
 	}
-	throwingData["promiseNest"] = func() interface{} {
+	throwingData["promiseNest"] = func() any {
 		return throwingData
 	}
-	throwingData["nonNullPromiseNest"] = func() interface{} {
+	throwingData["nonNullPromiseNest"] = func() any {
 		return throwingData
 	}
 
-	nullingData["nest"] = func() interface{} {
+	nullingData["nest"] = func() any {
 		return nullingData
 	}
-	nullingData["nonNullNest"] = func() interface{} {
+	nullingData["nonNullNest"] = func() any {
 		return nullingData
 	}
-	nullingData["promiseNest"] = func() interface{} {
+	nullingData["promiseNest"] = func() any {
 		return nullingData
 	}
-	nullingData["nonNullPromiseNest"] = func() interface{} {
+	nullingData["nonNullPromiseNest"] = func() any {
 		return nullingData
 	}
 
@@ -116,7 +116,7 @@ func TestNonNull_NullsANullableFieldThatThrowsSynchronously(t *testing.T) {
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"sync": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -127,7 +127,7 @@ func TestNonNull_NullsANullableFieldThatThrowsSynchronously(t *testing.T) {
 						Line: 3, Column: 9,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"sync",
 				},
 			},
@@ -154,7 +154,7 @@ func TestNonNull_NullsANullableFieldThatThrowsInAPromise(t *testing.T) {
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promise": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -165,7 +165,7 @@ func TestNonNull_NullsANullableFieldThatThrowsInAPromise(t *testing.T) {
 						Line: 3, Column: 9,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promise",
 				},
 			},
@@ -194,7 +194,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANullableFieldThat
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -205,7 +205,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANullableFieldThat
 						Line: 4, Column: 11,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest",
 					"nonNullSync",
 				},
@@ -235,7 +235,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -246,7 +246,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
 						Line: 4, Column: 11,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest",
 					"nonNullPromise",
 				},
@@ -276,7 +276,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promiseNest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -287,7 +287,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
 						Line: 4, Column: 11,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest",
 					"nonNullSync",
 				},
@@ -317,7 +317,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promiseNest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -328,7 +328,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
 						Line: 4, Column: 11,
 					},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest",
 					"nonNullPromise",
 				},
@@ -380,27 +380,27 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"nest": map[string]interface{}{
+		Data: map[string]any{
+			"nest": map[string]any{
 				"sync":    nil,
 				"promise": nil,
-				"nest": map[string]interface{}{
+				"nest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
-				"promiseNest": map[string]interface{}{
+				"promiseNest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
 			},
-			"promiseNest": map[string]interface{}{
+			"promiseNest": map[string]any{
 				"sync":    nil,
 				"promise": nil,
-				"nest": map[string]interface{}{
+				"nest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
-				"promiseNest": map[string]interface{}{
+				"promiseNest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
@@ -412,7 +412,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 4, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "sync",
 				},
 			}),
@@ -421,7 +421,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 7, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "nest", "sync",
 				},
 			}),
@@ -430,7 +430,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 11, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "promiseNest", "sync",
 				},
 			}),
@@ -439,7 +439,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 16, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "sync",
 				},
 			}),
@@ -448,7 +448,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 19, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "nest", "sync",
 				},
 			}),
@@ -457,7 +457,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 23, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "promiseNest", "sync",
 				},
 			}),
@@ -466,7 +466,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 5, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "promise",
 				},
 			}),
@@ -475,7 +475,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 8, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "nest", "promise",
 				},
 			}),
@@ -484,7 +484,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 12, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "promiseNest", "promise",
 				},
 			}),
@@ -493,7 +493,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 17, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "promise",
 				},
 			}),
@@ -502,7 +502,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 20, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "nest", "promise",
 				},
 			}),
@@ -511,7 +511,7 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatThrow(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 24, Column: 13},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "promiseNest", "promise",
 				},
 			}),
@@ -583,7 +583,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfField
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest":               nil,
 			"promiseNest":        nil,
 			"anotherNest":        nil,
@@ -595,7 +595,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfField
 				Locations: []location.SourceLocation{
 					{Line: 8, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullSync",
 				},
@@ -605,7 +605,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfField
 				Locations: []location.SourceLocation{
 					{Line: 19, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullSync",
 				},
@@ -615,7 +615,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfField
 				Locations: []location.SourceLocation{
 					{Line: 30, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"anotherNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullPromise",
 				},
@@ -625,7 +625,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfField
 				Locations: []location.SourceLocation{
 					{Line: 41, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"anotherPromiseNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullPromise",
 				},
@@ -656,7 +656,7 @@ func TestNonNull_NullsANullableFieldThatSynchronouslyReturnsNull(t *testing.T) {
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"sync": nil,
 		},
 	}
@@ -681,7 +681,7 @@ func TestNonNull_NullsANullableFieldThatSynchronouslyReturnsNullInAPromise(t *te
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promise": nil,
 		},
 	}
@@ -708,7 +708,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -717,7 +717,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
 				Locations: []location.SourceLocation{
 					{Line: 4, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest",
 					"nonNullSync",
 				},
@@ -747,7 +747,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -756,7 +756,7 @@ func TestNonNull_NullsASynchronouslyReturnedObjectThatContainsANonNullableFieldT
 				Locations: []location.SourceLocation{
 					{Line: 4, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest",
 					"nonNullPromise",
 				},
@@ -787,7 +787,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promiseNest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -796,7 +796,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
 				Locations: []location.SourceLocation{
 					{Line: 4, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest",
 					"nonNullSync",
 				},
@@ -826,7 +826,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"promiseNest": nil,
 		},
 		Errors: []gqlerrors.FormattedError{
@@ -835,7 +835,7 @@ func TestNonNull_NullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldTha
 				Locations: []location.SourceLocation{
 					{Line: 4, Column: 11},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest",
 					"nonNullPromise",
 				},
@@ -886,27 +886,27 @@ func TestNonNull_NullsAComplexTreeOfNullableFieldsThatReturnNull(t *testing.T) {
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
-			"nest": map[string]interface{}{
+		Data: map[string]any{
+			"nest": map[string]any{
 				"sync":    nil,
 				"promise": nil,
-				"nest": map[string]interface{}{
+				"nest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
-				"promiseNest": map[string]interface{}{
+				"promiseNest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
 			},
-			"promiseNest": map[string]interface{}{
+			"promiseNest": map[string]any{
 				"sync":    nil,
 				"promise": nil,
-				"nest": map[string]interface{}{
+				"nest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
-				"promiseNest": map[string]interface{}{
+				"promiseNest": map[string]any{
 					"sync":    nil,
 					"promise": nil,
 				},
@@ -977,7 +977,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOf
       }
 	`
 	expected := &graphql.Result{
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"nest":               nil,
 			"promiseNest":        nil,
 			"anotherNest":        nil,
@@ -989,7 +989,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOf
 				Locations: []location.SourceLocation{
 					{Line: 8, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullSync",
 				},
@@ -999,7 +999,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOf
 				Locations: []location.SourceLocation{
 					{Line: 19, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"promiseNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullSync",
 				},
@@ -1009,7 +1009,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOf
 				Locations: []location.SourceLocation{
 					{Line: 30, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"anotherNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullPromise",
 				},
@@ -1019,7 +1019,7 @@ func TestNonNull_NullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOf
 				Locations: []location.SourceLocation{
 					{Line: 41, Column: 19},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"anotherPromiseNest", "nonNullNest", "nonNullPromiseNest", "nonNullNest",
 					"nonNullPromiseNest", "nonNullPromise",
 				},
@@ -1055,7 +1055,7 @@ func TestNonNull_NullsTheTopLevelIfSyncNonNullableFieldThrows(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 2, Column: 17},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nonNullSync",
 				},
 			},
@@ -1087,7 +1087,7 @@ func TestNonNull_NullsTheTopLevelIfSyncNonNullableFieldErrors(t *testing.T) {
 				Locations: []location.SourceLocation{
 					{Line: 2, Column: 17},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nonNullPromise",
 				},
 			},
@@ -1119,7 +1119,7 @@ func TestNonNull_NullsTheTopLevelIfSyncNonNullableFieldReturnsNull(t *testing.T)
 				Locations: []location.SourceLocation{
 					{Line: 2, Column: 17},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nonNullSync",
 				},
 			},
@@ -1151,7 +1151,7 @@ func TestNonNull_NullsTheTopLevelIfSyncNonNullableFieldResolvesNull(t *testing.T
 				Locations: []location.SourceLocation{
 					{Line: 2, Column: 17},
 				},
-				Path: []interface{}{
+				Path: []any{
 					"nonNullPromise",
 				},
 			},

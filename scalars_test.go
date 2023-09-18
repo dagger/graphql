@@ -7,8 +7,8 @@ import (
 
 func TestCoerceInt(t *testing.T) {
 	tests := []struct {
-		in   interface{}
-		want interface{}
+		in   any
+		want any
 	}{
 		{
 			in:   false,
@@ -237,7 +237,7 @@ func TestCoerceInt(t *testing.T) {
 			want: nil,
 		},
 		{
-			in:   make(map[string]interface{}),
+			in:   make(map[string]any),
 			want: nil,
 		},
 	}
@@ -251,8 +251,8 @@ func TestCoerceInt(t *testing.T) {
 
 func TestCoerceFloat(t *testing.T) {
 	tests := []struct {
-		in   interface{}
-		want interface{}
+		in   any
+		want any
 	}{
 		{
 			in:   false,
@@ -435,7 +435,7 @@ func TestCoerceFloat(t *testing.T) {
 			want: nil,
 		},
 		{
-			in:   make(map[string]interface{}),
+			in:   make(map[string]any),
 			want: nil,
 		},
 	}
@@ -449,8 +449,8 @@ func TestCoerceFloat(t *testing.T) {
 
 func TestCoerceBool(t *testing.T) {
 	tests := []struct {
-		in   interface{}
-		want interface{}
+		in   any
+		want any
 	}{
 		{
 			in:   false,
@@ -737,7 +737,7 @@ func TestCoerceBool(t *testing.T) {
 			want: false,
 		},
 		{
-			in:   make(map[string]interface{}),
+			in:   make(map[string]any),
 			want: false,
 		},
 	}
