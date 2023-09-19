@@ -293,11 +293,17 @@ func isValidInputValue(value any, ttype Input) (bool, []string) {
 		return (len(messagesReduce) == 0), messagesReduce
 	case *Scalar:
 		if _, err := ttype.ParseValue(value); err != nil {
-			return false, []string{fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value)}
+			return false, []string{
+				fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value),
+				err.Error(),
+			}
 		}
 	case *Enum:
 		if _, err := ttype.ParseValue(value); err != nil {
-			return false, []string{fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value)}
+			return false, []string{
+				fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value),
+				err.Error(),
+			}
 		}
 	}
 

@@ -1798,11 +1798,17 @@ func isValidLiteralValue(ttype Input, valueAST ast.Value) (bool, []string) {
 		return (len(messagesReduce) == 0), messagesReduce
 	case *Scalar:
 		if _, err := ttype.ParseLiteral(valueAST); err != nil {
-			return false, []string{fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST))}
+			return false, []string{
+				fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST)),
+				err.Error(),
+			}
 		}
 	case *Enum:
 		if _, err := ttype.ParseLiteral(valueAST); err != nil {
-			return false, []string{fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST))}
+			return false, []string{
+				fmt.Sprintf(`Expected type "%v", found %v.`, ttype.Name(), printer.Print(valueAST)),
+				err.Error(),
+			}
 		}
 	}
 
