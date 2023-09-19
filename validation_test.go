@@ -9,14 +9,14 @@ import (
 
 var someScalarType = graphql.NewScalar(graphql.ScalarConfig{
 	Name: "SomeScalar",
-	Serialize: func(value any) any {
-		return nil
+	Serialize: func(value any) (any, error) {
+		return nil, nil
 	},
-	ParseValue: func(value any) any {
-		return nil
+	ParseValue: func(value any) (any, error) {
+		return nil, nil
 	},
-	ParseLiteral: func(valueAST ast.Value) any {
-		return nil
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
+		return nil, nil
 	},
 })
 var someObjectType = graphql.NewObject(graphql.ObjectConfig{
@@ -328,8 +328,8 @@ func TestTypeSystem_SchemaMustContainUniquelyNamedTypes_RejectsASchemaWhichRedef
 
 	fakeString := graphql.NewScalar(graphql.ScalarConfig{
 		Name: "String",
-		Serialize: func(value any) any {
-			return nil
+		Serialize: func(value any) (any, error) {
+			return nil, nil
 		},
 	})
 	queryType := graphql.NewObject(graphql.ObjectConfig{
@@ -849,8 +849,8 @@ func TestTypeSystem_ScalarTypesMustBeSerializable_AcceptsAScalarTypeDefiningSeri
 
 	_, err := schemaWithFieldType(graphql.NewScalar(graphql.ScalarConfig{
 		Name: "SomeScalar",
-		Serialize: func(value any) any {
-			return nil
+		Serialize: func(value any) (any, error) {
+			return nil, nil
 		},
 	}))
 	if err != nil {
@@ -873,14 +873,14 @@ func TestTypeSystem_ScalarTypesMustBeSerializable_AcceptsAScalarTypeDefiningPars
 
 	_, err := schemaWithFieldType(graphql.NewScalar(graphql.ScalarConfig{
 		Name: "SomeScalar",
-		Serialize: func(value any) any {
-			return nil
+		Serialize: func(value any) (any, error) {
+			return nil, nil
 		},
-		ParseValue: func(value any) any {
-			return nil
+		ParseValue: func(value any) (any, error) {
+			return nil, nil
 		},
-		ParseLiteral: func(valueAST ast.Value) any {
-			return nil
+		ParseLiteral: func(valueAST ast.Value) (any, error) {
+			return nil, nil
 		},
 	}))
 	if err != nil {
@@ -891,11 +891,11 @@ func TestTypeSystem_ScalarTypesMustBeSerializable_RejectsAScalarTypeDefiningPars
 
 	_, err := schemaWithFieldType(graphql.NewScalar(graphql.ScalarConfig{
 		Name: "SomeScalar",
-		Serialize: func(value any) any {
-			return nil
+		Serialize: func(value any) (any, error) {
+			return nil, nil
 		},
-		ParseValue: func(value any) any {
-			return nil
+		ParseValue: func(value any) (any, error) {
+			return nil, nil
 		},
 	}))
 	expectedError := `SomeScalar must provide both "parseValue" and "parseLiteral" functions.`
@@ -907,11 +907,11 @@ func TestTypeSystem_ScalarTypesMustBeSerializable_RejectsAScalarTypeDefiningPars
 
 	_, err := schemaWithFieldType(graphql.NewScalar(graphql.ScalarConfig{
 		Name: "SomeScalar",
-		Serialize: func(value any) any {
-			return nil
+		Serialize: func(value any) (any, error) {
+			return nil, nil
 		},
-		ParseLiteral: func(valueAST ast.Value) any {
-			return nil
+		ParseLiteral: func(valueAST ast.Value) (any, error) {
+			return nil, nil
 		},
 	}))
 	expectedError := `SomeScalar must provide both "parseValue" and "parseLiteral" functions.`

@@ -7,8 +7,9 @@ import (
 
 func TestCoerceInt(t *testing.T) {
 	tests := []struct {
-		in   any
-		want any
+		in    any
+		want  any
+		fails bool
 	}{
 		{
 			in:   false,
@@ -233,26 +234,38 @@ func TestCoerceInt(t *testing.T) {
 			want: nil,
 		},
 		{
-			in:   "I'm not a number",
-			want: nil,
+			in:    "I'm not a number",
+			want:  nil,
+			fails: true,
 		},
 		{
-			in:   make(map[string]any),
-			want: nil,
+			in:    make(map[string]any),
+			want:  nil,
+			fails: true,
 		},
 	}
 
 	for i, tt := range tests {
-		if got, want := coerceInt(tt.in), tt.want; got != want {
-			t.Errorf("%d: in=%v, got=%v, want=%v", i, tt.in, got, want)
+		got, err := coerceInt(tt.in)
+		if err != nil && !tt.fails {
+			t.Errorf("%d: in=%v, err=%v", i, tt.in, err)
+			continue
+		}
+		if err == nil && tt.fails {
+			t.Errorf("%d: in=%v, should have failed", i, tt.in)
+			continue
+		}
+		if !tt.fails && got != tt.want {
+			t.Errorf("%d: in=%v, got=%T(%v), want=%T(%v)", i, tt.in, got, got, tt.want, tt.want)
 		}
 	}
 }
 
 func TestCoerceFloat(t *testing.T) {
 	tests := []struct {
-		in   any
-		want any
+		in    any
+		want  any
+		fails bool
 	}{
 		{
 			in:   false,
@@ -431,26 +444,38 @@ func TestCoerceFloat(t *testing.T) {
 			want: nil,
 		},
 		{
-			in:   "I'm not a number",
-			want: nil,
+			in:    "I'm not a number",
+			want:  nil,
+			fails: true,
 		},
 		{
-			in:   make(map[string]any),
-			want: nil,
+			in:    make(map[string]any),
+			want:  nil,
+			fails: true,
 		},
 	}
 
 	for i, tt := range tests {
-		if got, want := coerceFloat(tt.in), tt.want; got != want {
-			t.Errorf("%d: in=%v, got=%v, want=%v", i, tt.in, got, want)
+		got, err := coerceFloat(tt.in)
+		if err != nil && !tt.fails {
+			t.Errorf("%d: in=%v, err=%v", i, tt.in, err)
+			continue
+		}
+		if err == nil && tt.fails {
+			t.Errorf("%d: in=%v, should have failed", i, tt.in)
+			continue
+		}
+		if !tt.fails && got != tt.want {
+			t.Errorf("%d: in=%v, got=%v, want=%v", i, tt.in, got, tt.want)
 		}
 	}
 }
 
 func TestCoerceBool(t *testing.T) {
 	tests := []struct {
-		in   any
-		want any
+		in    any
+		want  any
+		fails bool
 	}{
 		{
 			in:   false,
@@ -737,14 +762,24 @@ func TestCoerceBool(t *testing.T) {
 			want: false,
 		},
 		{
-			in:   make(map[string]any),
-			want: false,
+			in:    make(map[string]any),
+			want:  false,
+			fails: true,
 		},
 	}
 
 	for i, tt := range tests {
-		if got, want := coerceBool(tt.in), tt.want; got != want {
-			t.Errorf("%d: in=%v, got=%v, want=%v", i, tt.in, got, want)
+		got, err := coerceBool(tt.in)
+		if err != nil && !tt.fails {
+			t.Errorf("%d: in=%v, err=%v", i, tt.in, err)
+			continue
+		}
+		if err == nil && tt.fails {
+			t.Errorf("%d: in=%v, should have failed", i, tt.in)
+			continue
+		}
+		if !tt.fails && got != tt.want {
+			t.Errorf("%d: in=%v, got=%v, want=%v", i, tt.in, got, tt.want)
 		}
 	}
 }
