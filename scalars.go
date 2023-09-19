@@ -21,264 +21,258 @@ const (
 //
 // n.b. JavaScript's integers are safe between -(2^53 - 1) and 2^53 - 1 because
 // they are internally represented as IEEE 754 doubles.
-func coerceInt(value any) any {
+func coerceInt(value any) (any, error) {
 	switch value := value.(type) {
 	case bool:
-		if value == true {
-			return int64(1)
+		if value {
+			return int64(1), nil
 		}
-		return int64(0)
+		return int64(0), nil
 	case *bool:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case int:
-		return int64(value)
+		return int64(value), nil
 	case *int:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case int8:
-		return int64(value)
+		return int64(value), nil
 	case *int8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return int64(*value)
+		return int64(*value), nil
 	case int16:
-		return int64(value)
+		return int64(value), nil
 	case *int16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return int64(*value)
+		return int64(*value), nil
 	case int32:
-		return int64(value)
+		return int64(value), nil
 	case *int32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return int64(*value)
+		return int64(*value), nil
 	case int64:
 		return intOrNil(value)
 	case *int64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case uint:
-		return int64(value)
+		return int64(value), nil
 	case *uint:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case uint8:
-		return int64(value)
+		return int64(value), nil
 	case *uint8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return int64(*value)
+		return int64(*value), nil
 	case uint16:
-		return int64(value)
+		return int64(value), nil
 	case *uint16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return int64(*value)
+		return int64(*value), nil
 	case uint32:
-		return int64(value)
+		return int64(value), nil
 	case *uint32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case uint64:
 		if value > uint64(math.MaxInt64) {
 			// bypass intOrNil
-			return nil
+			return nil, fmt.Errorf("value %d is greater than MaxInt64", value)
 		}
 		return intOrNil(int64(value))
 	case *uint64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case float32:
 		return intOrNil(int64(value))
 	case *float32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case float64:
 		return intOrNil(int64(value))
 	case *float64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	case string:
-		val, err := strconv.ParseFloat(value, 0)
+		val, err := strconv.ParseFloat(value, 64)
 		if err != nil {
-			return nil
+			return nil, err
 		}
 		return coerceInt(val)
 	case *string:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceInt(*value)
 	}
 
 	// If the value cannot be transformed into an int, return nil instead of '0'
 	// to denote 'no integer found'
-	return nil
+	return nil, fmt.Errorf("cannot coerce %T to int", value)
 }
 
 // Integers are only safe when between -(2^53 - 1) and 2^53 - 1 due to being
 // encoded in JavaScript and represented in JSON as double-precision floating
 // point numbers, as specified by IEEE 754.
-func intOrNil(value int64) any {
+func intOrNil(value int64) (int64, error) {
 	if MinInt <= value && value <= MaxInt {
-		return value
+		return value, nil
 	}
-	return nil
+	return 0, fmt.Errorf("value %d is out of range (%d, %d) for Int64", value, MinInt, MaxInt)
 }
 
 // Int is the GraphQL Integer type definition.
 var Int = NewScalar(ScalarConfig{
 	Name: "Int",
 	Description: "The `Int` scalar type represents non-fractional signed whole numeric " +
-		"values. Int can represent values between  -(2^53  1) and 2^53 - 1. ",
+		"values. Int can represent values between -(2^31) and 2^31 - 1. ",
 	Serialize:  coerceInt,
 	ParseValue: coerceInt,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.IntValue:
-			if intValue, err := strconv.ParseInt(valueAST.Value, 10, 64); err == nil {
-				return intValue
-			}
+			return strconv.ParseInt(valueAST.Value, 10, 64)
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to int", valueAST)
 	},
 })
 
-func coerceFloat(value any) any {
+func coerceFloat(value any) (any, error) {
 	switch value := value.(type) {
 	case bool:
-		if value == true {
-			return 1.0
+		if value {
+			return 1.0, nil
 		}
-		return 0.0
+		return 0.0, nil
 	case *bool:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case int:
-		return float64(value)
+		return float64(value), nil
 	case *int:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case int8:
-		return float64(value)
+		return float64(value), nil
 	case *int8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case int16:
-		return float64(value)
+		return float64(value), nil
 	case *int16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case int32:
-		return float64(value)
+		return float64(value), nil
 	case *int32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case int64:
-		return float64(value)
+		return float64(value), nil
 	case *int64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case uint:
-		return float64(value)
+		return float64(value), nil
 	case *uint:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case uint8:
-		return float64(value)
+		return float64(value), nil
 	case *uint8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case uint16:
-		return float64(value)
+		return float64(value), nil
 	case *uint16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case uint32:
-		return float64(value)
+		return float64(value), nil
 	case *uint32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case uint64:
-		return float64(value)
+		return float64(value), nil
 	case *uint64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case float32:
-		return value
+		return value, nil
 	case *float32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case float64:
-		return value
+		return value, nil
 	case *float64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	case string:
-		val, err := strconv.ParseFloat(value, 0)
-		if err != nil {
-			return nil
-		}
-		return val
+		return strconv.ParseFloat(value, 64)
 	case *string:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceFloat(*value)
 	}
 
 	// If the value cannot be transformed into an float, return nil instead of '0.0'
 	// to denote 'no float found'
-	return nil
+	return nil, fmt.Errorf("cannot coerce %T to float", value)
 }
 
 // Float is the GraphQL float type definition.
@@ -289,29 +283,25 @@ var Float = NewScalar(ScalarConfig{
 		"[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point). ",
 	Serialize:  coerceFloat,
 	ParseValue: coerceFloat,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.FloatValue:
-			if floatValue, err := strconv.ParseFloat(valueAST.Value, 64); err == nil {
-				return floatValue
-			}
+			return strconv.ParseFloat(valueAST.Value, 64)
 		case *ast.IntValue:
-			if floatValue, err := strconv.ParseFloat(valueAST.Value, 64); err == nil {
-				return floatValue
-			}
+			return strconv.ParseFloat(valueAST.Value, 64)
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to float", valueAST)
 	},
 })
 
-func coerceString(value any) any {
+func coerceString(value any) (any, error) {
 	if v, ok := value.(*string); ok {
 		if v == nil {
-			return nil
+			return nil, nil
 		}
-		return *v
+		return *v, nil
 	}
-	return fmt.Sprintf("%v", value)
+	return fmt.Sprintf("%v", value), nil
 }
 
 // String is the GraphQL string type definition
@@ -322,157 +312,157 @@ var String = NewScalar(ScalarConfig{
 		"represent free-form human-readable text.",
 	Serialize:  coerceString,
 	ParseValue: coerceString,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.StringValue:
-			return valueAST.Value
+			return valueAST.Value, nil
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to string", valueAST)
 	},
 })
 
-func coerceBool(value any) any {
+func coerceBool(value any) (any, error) {
 	switch value := value.(type) {
 	case bool:
-		return value
+		return value, nil
 	case *bool:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
-		return *value
+		return *value, nil
 	case string:
 		switch value {
 		case "", "false":
-			return false
+			return false, nil
 		}
-		return true
+		return true, nil
 	case *string:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case float64:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *float64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case float32:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *float32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case int:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *int:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case int8:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *int8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case int16:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *int16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case int32:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *int32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case int64:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *int64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case uint:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *uint:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case uint8:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *uint8:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case uint16:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *uint16:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case uint32:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *uint32:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	case uint64:
 		if value != 0 {
-			return true
+			return true, nil
 		}
-		return false
+		return false, nil
 	case *uint64:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return coerceBool(*value)
 	}
-	return false
+	return false, fmt.Errorf("cannot coerce %T to bool", value)
 }
 
 // Boolean is the GraphQL boolean type definition
@@ -481,12 +471,12 @@ var Boolean = NewScalar(ScalarConfig{
 	Description: "The `Boolean` scalar type represents `true` or `false`.",
 	Serialize:   coerceBool,
 	ParseValue:  coerceBool,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.BooleanValue:
-			return valueAST.Value
+			return valueAST.Value, nil
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to bool", valueAST)
 	},
 })
 
@@ -500,57 +490,63 @@ var ID = NewScalar(ScalarConfig{
 		"(such as `4`) input value will be accepted as an ID.",
 	Serialize:  coerceString,
 	ParseValue: coerceString,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.IntValue:
-			return valueAST.Value
+			return valueAST.Value, nil
 		case *ast.StringValue:
-			return valueAST.Value
+			return valueAST.Value, nil
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to string", valueAST)
 	},
 })
 
-func serializeDateTime(value any) any {
+func serializeDateTime(value any) (any, error) {
 	switch value := value.(type) {
 	case time.Time:
 		buff, err := value.MarshalText()
 		if err != nil {
-			return nil
+			return nil, err
 		}
 
-		return string(buff)
+		return string(buff), nil
 	case *time.Time:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return serializeDateTime(*value)
 	default:
-		return nil
+		if value == nil {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("cannot serialize %T to time.Time", value)
 	}
 }
 
-func unserializeDateTime(value any) any {
+func unserializeDateTime(value any) (any, error) {
 	switch value := value.(type) {
 	case []byte:
 		t := time.Time{}
 		err := t.UnmarshalText(value)
 		if err != nil {
-			return nil
+			return nil, err
 		}
 
-		return t
+		return t, nil
 	case string:
 		return unserializeDateTime([]byte(value))
 	case *string:
 		if value == nil {
-			return nil
+			return nil, nil
 		}
 		return unserializeDateTime([]byte(*value))
 	case time.Time:
-		return value
+		return value, nil
 	default:
-		return nil
+		if value == nil {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("cannot unserialize %T to time.Time", value)
 	}
 }
 
@@ -560,11 +556,11 @@ var DateTime = NewScalar(ScalarConfig{
 		" The DateTime is serialized as an RFC 3339 quoted string",
 	Serialize:  serializeDateTime,
 	ParseValue: unserializeDateTime,
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.StringValue:
 			return unserializeDateTime(valueAST.Value)
 		}
-		return nil
+		return nil, fmt.Errorf("cannot parse %T to string", valueAST)
 	},
 })

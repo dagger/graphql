@@ -57,7 +57,7 @@ func getArgumentValues(
 		if tmpValue, ok := argASTMap[argDef.PrivateName]; ok {
 			value = tmpValue.Value
 		}
-		if tmp = valueFromAST(value, argDef.Type, variableValues); isNullish(tmp) {
+		if tmp, _ = valueFromAST(value, argDef.Type, variableValues); isNullish(tmp) {
 			tmp = argDef.DefaultValue
 		}
 		if !isNullish(tmp) {
@@ -92,10 +92,10 @@ func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, inpu
 	if isValid {
 		if isNullish(input) {
 			if definitionAST.DefaultValue != nil {
-				return valueFromAST(definitionAST.DefaultValue, ttype, nil), nil
+				return valueFromAST(definitionAST.DefaultValue, ttype, nil)
 			}
 		}
-		return coerceValue(ttype, input), nil
+		return coerceValue(ttype, input)
 	}
 	if isNullish(input) {
 		return "", gqlerrors.NewError(
@@ -130,9 +130,9 @@ func getVariableValue(schema Schema, definitionAST *ast.VariableDefinition, inpu
 }
 
 // Given a type and any value, return a runtime value coerced to match the type.
-func coerceValue(ttype Input, value any) any {
+func coerceValue(ttype Input, value any) (any, error) {
 	if isNullish(value) {
-		return nil
+		return nil, nil
 	}
 	switch ttype := ttype.(type) {
 	case *NonNull:
@@ -143,11 +143,20 @@ func coerceValue(ttype Input, value any) any {
 		if valType.Kind() == reflect.Slice {
 			for i := 0; i < valType.Len(); i++ {
 				val := valType.Index(i).Interface()
-				values = append(values, coerceValue(ttype.OfType, val))
+				recur, err := coerceValue(ttype.OfType, val)
+				if err != nil {
+					return nil, fmt.Errorf("coerceValue list %d: %v", i, err)
+				}
+				values = append(values, recur)
 			}
-			return values
+			return values, nil
+		} else {
+			recur, err := coerceValue(ttype.OfType, value)
+			if err != nil {
+				return nil, err
+			}
+			return append(values, recur), nil
 		}
-		return append(values, coerceValue(ttype.OfType, value))
 	case *InputObject:
 		var obj = map[string]any{}
 		valueMap, _ := value.(map[string]any)
@@ -156,7 +165,11 @@ func coerceValue(ttype Input, value any) any {
 		}
 
 		for name, field := range ttype.Fields() {
-			fieldValue := coerceValue(field.Type, valueMap[name])
+			recur, err := coerceValue(field.Type, valueMap[name])
+			if err != nil {
+				return nil, fmt.Errorf("coerceValue input object %s: %v", name, err)
+			}
+			fieldValue := recur
 			if isNullish(fieldValue) {
 				fieldValue = field.DefaultValue
 			}
@@ -164,18 +177,14 @@ func coerceValue(ttype Input, value any) any {
 				obj[name] = fieldValue
 			}
 		}
-		return obj
+		return obj, nil
 	case *Scalar:
-		if parsed := ttype.ParseValue(value); !isNullish(parsed) {
-			return parsed
-		}
+		return ttype.ParseValue(value)
 	case *Enum:
-		if parsed := ttype.ParseValue(value); !isNullish(parsed) {
-			return parsed
-		}
+		return ttype.ParseValue(value)
 	}
 
-	return nil
+	return nil, fmt.Errorf("coerceValue: unknown type %T", ttype)
 }
 
 // graphql-js/src/utilities.js`
@@ -283,11 +292,11 @@ func isValidInputValue(value any, ttype Input) (bool, []string) {
 		}
 		return (len(messagesReduce) == 0), messagesReduce
 	case *Scalar:
-		if parsedVal := ttype.ParseValue(value); isNullish(parsedVal) {
+		if _, err := ttype.ParseValue(value); err != nil {
 			return false, []string{fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value)}
 		}
 	case *Enum:
-		if parsedVal := ttype.ParseValue(value); isNullish(parsedVal) {
+		if _, err := ttype.ParseValue(value); err != nil {
 			return false, []string{fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value)}
 		}
 	}
@@ -348,19 +357,28 @@ func isIterable(src any) bool {
  * | Int / Float          | Number        |
  *
  */
-func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any {
+func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) (any, error) {
 	if valueAST == nil {
-		return nil
+		return nil, nil
 	}
 	// precedence: value > type
 	if valueAST, ok := valueAST.(*ast.Variable); ok {
-		if valueAST.Name == nil || variables == nil {
-			return nil
+		if valueAST.Name == nil {
+			return nil, fmt.Errorf("invalid variable")
+		}
+
+		var val any
+		var found bool
+		if variables != nil {
+			val, found = variables[valueAST.Name.Value]
+		}
+		if !found {
+			return nil, fmt.Errorf("missing variable: $%s", valueAST.Name.Value)
 		}
 		// Note: we're not doing any checking that this variable is correct. We're
 		// assuming that this query has been validated and the variable usage here
 		// is of the correct type.
-		return variables[valueAST.Name.Value]
+		return val, nil
 	}
 	switch ttype := ttype.(type) {
 	case *NonNull:
@@ -369,11 +387,19 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any
 		values := []any{}
 		if valueAST, ok := valueAST.(*ast.ListValue); ok {
 			for _, itemAST := range valueAST.Values {
-				values = append(values, valueFromAST(itemAST, ttype.OfType, variables))
+				recur, err := valueFromAST(itemAST, ttype.OfType, variables)
+				if err != nil {
+					return nil, err
+				}
+				values = append(values, recur)
 			}
-			return values
+			return values, nil
 		}
-		return append(values, valueFromAST(valueAST, ttype.OfType, variables))
+		recur, err := valueFromAST(valueAST, ttype.OfType, variables)
+		if err != nil {
+			return nil, err
+		}
+		return append(values, recur), nil
 	case *InputObject:
 		var (
 			ok bool
@@ -381,7 +407,7 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any
 			of *ast.ObjectField
 		)
 		if ov, ok = valueAST.(*ast.ObjectValue); !ok {
-			return nil
+			return nil, fmt.Errorf("expected %T, found %T", ov, valueAST)
 		}
 		fieldASTs := map[string]*ast.ObjectField{}
 		for _, of = range ov.Fields {
@@ -394,7 +420,11 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any
 		for name, field := range ttype.Fields() {
 			var value any
 			if of, ok = fieldASTs[name]; ok {
-				value = valueFromAST(of.Value, field.Type, variables)
+				recur, err := valueFromAST(of.Value, field.Type, variables)
+				if err != nil {
+					return nil, err
+				}
+				value = recur
 			} else {
 				value = field.DefaultValue
 			}
@@ -402,14 +432,14 @@ func valueFromAST(valueAST ast.Value, ttype Input, variables map[string]any) any
 				obj[name] = value
 			}
 		}
-		return obj
+		return obj, nil
 	case *Scalar:
 		return ttype.ParseLiteral(valueAST)
 	case *Enum:
 		return ttype.ParseLiteral(valueAST)
 	}
 
-	return nil
+	return nil, fmt.Errorf("valueFromAST: unknown type %T", ttype)
 }
 
 func invariant(condition bool, message string) error {
