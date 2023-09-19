@@ -243,8 +243,8 @@ func isValidInputValue(value any, ttype Input) (bool, []string) {
 			for i := 0; i < valType.Len(); i++ {
 				val := valType.Index(i).Interface()
 				_, messages := isValidInputValue(val, ttype.OfType)
-				for idx, message := range messages {
-					messagesReduce = append(messagesReduce, fmt.Sprintf(`In element #%v: %v`, idx+1, message))
+				for _, message := range messages {
+					messagesReduce = append(messagesReduce, fmt.Sprintf(`In element #%v: %v`, i+1, message))
 				}
 			}
 			return (len(messagesReduce) == 0), messagesReduce
@@ -295,14 +295,14 @@ func isValidInputValue(value any, ttype Input) (bool, []string) {
 		if _, err := ttype.ParseValue(value); err != nil {
 			return false, []string{
 				fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value),
-				err.Error(),
+				fmt.Sprintf("Error: %s", err),
 			}
 		}
 	case *Enum:
 		if _, err := ttype.ParseValue(value); err != nil {
 			return false, []string{
 				fmt.Sprintf(`Expected type "%v", found "%v".`, ttype.Name(), value),
-				err.Error(),
+				fmt.Sprintf("Error: %s", err),
 			}
 		}
 	}

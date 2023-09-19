@@ -91,7 +91,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidStringValues_IntIntoString(t *te
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringArg\" has invalid value 1.\nExpected type \"String\", found 1.",
+				"Argument \"stringArg\" has invalid value 1.\n"+
+					"Expected type \"String\", found 1.\n"+
+					"Error: cannot parse *ast.IntValue to string",
 				4, 39,
 			),
 		})
@@ -106,7 +108,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidStringValues_FloatIntoString(t *
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringArg\" has invalid value 1.0.\nExpected type \"String\", found 1.0.",
+				"Argument \"stringArg\" has invalid value 1.0.\n"+
+					"Expected type \"String\", found 1.0.\n"+
+					"Error: cannot parse *ast.FloatValue to string",
 				4, 39,
 			),
 		})
@@ -121,7 +125,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidStringValues_BooleanIntoString(t
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringArg\" has invalid value true.\nExpected type \"String\", found true.",
+				"Argument \"stringArg\" has invalid value true.\n"+
+					"Expected type \"String\", found true.\n"+
+					"Error: cannot parse *ast.BooleanValue to string",
 				4, 39,
 			),
 		})
@@ -136,7 +142,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidStringValues_UnquotedStringIntoS
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringArg\" has invalid value BAR.\nExpected type \"String\", found BAR.",
+				"Argument \"stringArg\" has invalid value BAR.\n"+
+					"Expected type \"String\", found BAR.\n"+
+					"Error: cannot parse *ast.EnumValue to string",
 				4, 39,
 			),
 		})
@@ -152,7 +160,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIntValues_StringIntoInt(t *testi
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"intArg\" has invalid value \"3\".\nExpected type \"Int\", found \"3\".",
+				"Argument \"intArg\" has invalid value \"3\".\n"+
+					"Expected type \"Int\", found \"3\".\n"+
+					"Error: cannot parse *ast.StringValue to int",
 				4, 33,
 			),
 		})
@@ -167,7 +177,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIntValues_BigIntIntoInt(t *testi
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"intArg\" has invalid value 829384293849283498239482938.\nExpected type \"Int\", found 829384293849283498239482938.",
+				"Argument \"intArg\" has invalid value 829384293849283498239482938.\n"+
+					"Expected type \"Int\", found 829384293849283498239482938.\n"+
+					"Error: strconv.ParseInt: parsing \"829384293849283498239482938\": value out of range",
 				4, 33,
 			),
 		})
@@ -182,7 +194,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIntValues_UnquotedStringIntoInt(
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"intArg\" has invalid value FOO.\nExpected type \"Int\", found FOO.",
+				"Argument \"intArg\" has invalid value FOO.\n"+
+					"Expected type \"Int\", found FOO.\n"+
+					"Error: cannot parse *ast.EnumValue to int",
 				4, 33,
 			),
 		})
@@ -197,7 +211,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIntValues_SimpleFloatIntoInt(t *
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"intArg\" has invalid value 3.0.\nExpected type \"Int\", found 3.0.",
+				"Argument \"intArg\" has invalid value 3.0.\n"+
+					"Expected type \"Int\", found 3.0.\n"+
+					"Error: cannot parse *ast.FloatValue to int",
 				4, 33,
 			),
 		})
@@ -212,7 +228,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIntValues_FloatIntoInt(t *testin
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"intArg\" has invalid value 3.333.\nExpected type \"Int\", found 3.333.",
+				"Argument \"intArg\" has invalid value 3.333.\n"+
+					"Expected type \"Int\", found 3.333.\n"+
+					"Error: cannot parse *ast.FloatValue to int",
 				4, 33,
 			),
 		})
@@ -228,7 +246,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidFloatValues_StringIntoFloat(t *t
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"floatArg\" has invalid value \"3.333\".\nExpected type \"Float\", found \"3.333\".",
+				"Argument \"floatArg\" has invalid value \"3.333\".\n"+
+					"Expected type \"Float\", found \"3.333\".\n"+
+					"Error: cannot parse *ast.StringValue to float",
 				4, 37,
 			),
 		})
@@ -243,7 +263,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidFloatValues_BooleanIntoFloat(t *
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"floatArg\" has invalid value true.\nExpected type \"Float\", found true.",
+				"Argument \"floatArg\" has invalid value true.\n"+
+					"Expected type \"Float\", found true.\n"+
+					"Error: cannot parse *ast.BooleanValue to float",
 				4, 37,
 			),
 		})
@@ -258,7 +280,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidFloatValues_UnquotedIntoFloat(t 
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"floatArg\" has invalid value FOO.\nExpected type \"Float\", found FOO.",
+				"Argument \"floatArg\" has invalid value FOO.\n"+
+					"Expected type \"Float\", found FOO.\n"+
+					"Error: cannot parse *ast.EnumValue to float",
 				4, 37,
 			),
 		})
@@ -274,7 +298,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidBooleanValues_IntIntoBoolean(t *
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"booleanArg\" has invalid value 2.\nExpected type \"Boolean\", found 2.",
+				"Argument \"booleanArg\" has invalid value 2.\n"+
+					"Expected type \"Boolean\", found 2.\n"+
+					"Error: cannot parse *ast.IntValue to bool",
 				4, 41,
 			),
 		})
@@ -289,7 +315,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidBooleanValues_FloatIntoBoolean(t
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"booleanArg\" has invalid value 1.0.\nExpected type \"Boolean\", found 1.0.",
+				"Argument \"booleanArg\" has invalid value 1.0.\n"+
+					"Expected type \"Boolean\", found 1.0.\n"+
+					"Error: cannot parse *ast.FloatValue to bool",
 				4, 41,
 			),
 		})
@@ -304,7 +332,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidBooleanValues_StringIntoBoolean(
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"booleanArg\" has invalid value \"true\".\nExpected type \"Boolean\", found \"true\".",
+				"Argument \"booleanArg\" has invalid value \"true\".\n"+
+					"Expected type \"Boolean\", found \"true\".\n"+
+					"Error: cannot parse *ast.StringValue to bool",
 				4, 41,
 			),
 		})
@@ -319,7 +349,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidBooleanValues_UnquotedStringInto
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"booleanArg\" has invalid value TRUE.\nExpected type \"Boolean\", found TRUE.",
+				"Argument \"booleanArg\" has invalid value TRUE.\n"+
+					"Expected type \"Boolean\", found TRUE.\n"+
+					"Error: cannot parse *ast.EnumValue to bool",
 				4, 41,
 			),
 		})
@@ -335,7 +367,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIDValue_FloatIntoID(t *testing.T
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"idArg\" has invalid value 1.0.\nExpected type \"ID\", found 1.0.",
+				"Argument \"idArg\" has invalid value 1.0.\n"+
+					"Expected type \"ID\", found 1.0.\n"+
+					"Error: cannot parse *ast.FloatValue to string",
 				4, 31,
 			),
 		})
@@ -350,7 +384,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIDValue_BooleanIntoID(t *testing
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"idArg\" has invalid value true.\nExpected type \"ID\", found true.",
+				"Argument \"idArg\" has invalid value true.\n"+
+					"Expected type \"ID\", found true.\n"+
+					"Error: cannot parse *ast.BooleanValue to string",
 				4, 31,
 			),
 		})
@@ -365,7 +401,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidIDValue_UnquotedIntoID(t *testin
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"idArg\" has invalid value SOMETHING.\nExpected type \"ID\", found SOMETHING.",
+				"Argument \"idArg\" has invalid value SOMETHING.\n"+
+					"Expected type \"ID\", found SOMETHING.\n"+
+					"Error: cannot parse *ast.EnumValue to string",
 				4, 31,
 			),
 		})
@@ -381,7 +419,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_IntIntoEnum(t *testing
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value 2.\nExpected type \"DogCommand\", found 2.",
+				"Argument \"dogCommand\" has invalid value 2.\n"+
+					"Expected type \"DogCommand\", found 2.\n"+
+					"Error: Enum DogCommand cannot parse value: 2",
 				4, 41,
 			),
 		})
@@ -396,7 +436,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_FloatIntoEnum(t *testi
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value 1.0.\nExpected type \"DogCommand\", found 1.0.",
+				"Argument \"dogCommand\" has invalid value 1.0.\n"+
+					"Expected type \"DogCommand\", found 1.0.\n"+
+					"Error: Enum DogCommand cannot parse value: 1.0",
 				4, 41,
 			),
 		})
@@ -411,7 +453,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_StringIntoEnum(t *test
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value \"SIT\".\nExpected type \"DogCommand\", found \"SIT\".",
+				"Argument \"dogCommand\" has invalid value \"SIT\".\n"+
+					"Expected type \"DogCommand\", found \"SIT\".\n"+
+					"Error: Enum DogCommand cannot parse value: SIT",
 				4, 41,
 			),
 		})
@@ -426,7 +470,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_BooleanIntoEnum(t *tes
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value true.\nExpected type \"DogCommand\", found true.",
+				"Argument \"dogCommand\" has invalid value true.\n"+
+					"Expected type \"DogCommand\", found true.\n"+
+					"Error: Enum DogCommand cannot parse value: true",
 				4, 41,
 			),
 		})
@@ -441,7 +487,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_UnknownEnumValueIntoEn
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value JUGGLE.\nExpected type \"DogCommand\", found JUGGLE.",
+				"Argument \"dogCommand\" has invalid value JUGGLE.\n"+
+					"Expected type \"DogCommand\", found JUGGLE.\n"+
+					"Error: Enum DogCommand cannot parse value: JUGGLE",
 				4, 41,
 			),
 		})
@@ -456,7 +504,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidEnumValue_DifferentCaseEnumValue
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"dogCommand\" has invalid value sit.\nExpected type \"DogCommand\", found sit.",
+				"Argument \"dogCommand\" has invalid value sit.\n"+
+					"Expected type \"DogCommand\", found sit.\n"+
+					"Error: Enum DogCommand cannot parse value: sit",
 				4, 41,
 			),
 		})
@@ -500,7 +550,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidListValue_IncorrectItemType(t *t
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringListArg\" has invalid value [\"one\", 2].\nIn element #1: Expected type \"String\", found 2.",
+				"Argument \"stringListArg\" has invalid value [\"one\", 2].\n"+
+					"In element #2: Expected type \"String\", found 2.\n"+
+					"In element #2: Error: cannot parse *ast.IntValue to string",
 				4, 47,
 			),
 		})
@@ -515,7 +567,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidListValue_SingleValueOfIncorrent
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"stringListArg\" has invalid value 1.\nExpected type \"String\", found 1.",
+				"Argument \"stringListArg\" has invalid value 1.\n"+
+					"Expected type \"String\", found 1.\n"+
+					"Error: cannot parse *ast.IntValue to string",
 				4, 47,
 			),
 		})
@@ -622,11 +676,15 @@ func TestValidate_ArgValuesOfCorrectType_InvalidNonNullableValue_IncorrectValueT
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"req2\" has invalid value \"two\".\nExpected type \"Int\", found \"two\".",
+				"Argument \"req2\" has invalid value \"two\".\n"+
+					"Expected type \"Int\", found \"two\".\n"+
+					"Error: cannot parse *ast.StringValue to int",
 				4, 32,
 			),
 			testutil.RuleError(
-				"Argument \"req1\" has invalid value \"one\".\nExpected type \"Int\", found \"one\".",
+				"Argument \"req1\" has invalid value \"one\".\n"+
+					"Expected type \"Int\", found \"one\".\n"+
+					"Error: cannot parse *ast.StringValue to int",
 				4, 45,
 			),
 		})
@@ -641,7 +699,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidNonNullableValue_IncorrectValueA
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"req1\" has invalid value \"one\".\nExpected type \"Int\", found \"one\".",
+				"Argument \"req1\" has invalid value \"one\".\n"+
+					"Expected type \"Int\", found \"one\".\n"+
+					"Error: cannot parse *ast.StringValue to int",
 				4, 32,
 			),
 		})
@@ -742,7 +802,9 @@ func TestValidate_ArgValuesOfCorrectType_InvalidInputObjectValue_PartialObject_I
         `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
-				"Argument \"complexArg\" has invalid value {stringListField: [\"one\", 2], requiredField: true}.\nIn field \"stringListField\": In element #1: Expected type \"String\", found 2.",
+				"Argument \"complexArg\" has invalid value {stringListField: [\"one\", 2], requiredField: true}.\n"+
+					"In field \"stringListField\": In element #2: Expected type \"String\", found 2.\n"+
+					"In field \"stringListField\": In element #2: Error: cannot parse *ast.IntValue to string",
 				4, 41,
 			),
 		})
@@ -789,12 +851,14 @@ func TestValidate_ArgValuesOfCorrectType_DirectiveArguments_WithDirectivesWithIn
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
 				`Argument "if" has invalid value "yes".`+
-					"\nExpected type \"Boolean\", found \"yes\".",
+					"\nExpected type \"Boolean\", found \"yes\"."+
+					"\nError: cannot parse *ast.StringValue to bool",
 				3, 28,
 			),
 			testutil.RuleError(
 				`Argument "if" has invalid value ENUM.`+
-					"\nExpected type \"Boolean\", found ENUM.",
+					"\nExpected type \"Boolean\", found ENUM."+
+					"\nError: cannot parse *ast.EnumValue to bool",
 				4, 28,
 			),
 		})

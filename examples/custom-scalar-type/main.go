@@ -25,35 +25,35 @@ var CustomScalarType = graphql.NewScalar(graphql.ScalarConfig{
 	Name:        "CustomScalarType",
 	Description: "The `CustomScalarType` scalar type represents an ID Object.",
 	// Serialize serializes `CustomID` to string.
-	Serialize: func(value any) any {
+	Serialize: func(value any) (any, error) {
 		switch value := value.(type) {
 		case CustomID:
-			return value.String()
+			return value.String(), nil
 		case *CustomID:
 			v := *value
-			return v.String()
+			return v.String(), nil
 		default:
-			return nil
+			return nil, fmt.Errorf("value must be of type CustomID, have %+v", value)
 		}
 	},
 	// ParseValue parses GraphQL variables from `string` to `CustomID`.
-	ParseValue: func(value any) any {
+	ParseValue: func(value any) (any, error) {
 		switch value := value.(type) {
 		case string:
-			return NewCustomID(value)
+			return NewCustomID(value), nil
 		case *string:
-			return NewCustomID(*value)
+			return NewCustomID(*value), nil
 		default:
-			return nil
+			return nil, fmt.Errorf("value must be of type string, have %+v", value)
 		}
 	},
 	// ParseLiteral parses GraphQL AST value to `CustomID`.
-	ParseLiteral: func(valueAST ast.Value) any {
+	ParseLiteral: func(valueAST ast.Value) (any, error) {
 		switch valueAST := valueAST.(type) {
 		case *ast.StringValue:
-			return NewCustomID(valueAST.Value)
+			return NewCustomID(valueAST.Value), nil
 		default:
-			return nil
+			return nil, fmt.Errorf("valueAST must be of type ast.StringValue, have %+v", valueAST)
 		}
 	},
 })
@@ -88,7 +88,7 @@ func main() {
 						// id := p.Args["id"]
 						// log.Printf("id from arguments: %+v", id)
 						customers := []Customer{
-							Customer{ID: NewCustomID("fb278f2a4a13f")},
+							{ID: NewCustomID("fb278f2a4a13f")},
 						}
 						return customers, nil
 					},

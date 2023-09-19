@@ -52,37 +52,37 @@ func NewNullString(value string) *NullString {
 }
 
 // SerializeNullString serializes `NullString` to a string
-func SerializeNullString(value any) any {
+func SerializeNullString(value any) (any, error) {
 	switch value := value.(type) {
 	case NullString:
-		return value.String
+		return value.String, nil
 	case *NullString:
 		v := *value
-		return v.String
+		return v.String, nil
 	default:
-		return nil
+		return nil, fmt.Errorf("%+v is not a valid NullString", value)
 	}
 }
 
 // ParseNullString parses GraphQL variables from `string` to `CustomID`
-func ParseNullString(value any) any {
+func ParseNullString(value any) (any, error) {
 	switch value := value.(type) {
 	case string:
-		return NewNullString(value)
+		return NewNullString(value), nil
 	case *string:
-		return NewNullString(*value)
+		return NewNullString(*value), nil
 	default:
-		return nil
+		return nil, fmt.Errorf("%+v is not a valid NullString", value)
 	}
 }
 
 // ParseLiteralNullString parses GraphQL AST value to `NullString`.
-func ParseLiteralNullString(valueAST ast.Value) any {
+func ParseLiteralNullString(valueAST ast.Value) (any, error) {
 	switch valueAST := valueAST.(type) {
 	case *ast.StringValue:
-		return NewNullString(valueAST.Value)
+		return NewNullString(valueAST.Value), nil
 	default:
-		return nil
+		return nil, fmt.Errorf("%+v is not a valid NullString", valueAST)
 	}
 }
 

@@ -64,10 +64,12 @@ func TestValidate_VariableDefaultValuesOfCorrectType_VariablesWithInvalidDefault
     `,
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(`Variable "$a" has invalid default value: "one".`+
-				"\nExpected type \"Int\", found \"one\".",
+				"\nExpected type \"Int\", found \"one\"."+
+				"\nError: cannot parse *ast.StringValue to int",
 				3, 19),
 			testutil.RuleError(`Variable "$b" has invalid default value: 4.`+
-				"\nExpected type \"String\", found 4.",
+				"\nExpected type \"String\", found 4."+
+				"\nError: cannot parse *ast.IntValue to string",
 				4, 22),
 			testutil.RuleError(
 				`Variable "$c" has invalid default value: "notverycomplex".`+
@@ -97,7 +99,8 @@ func TestValidate_VariableDefaultValuesOfCorrectType_ListVariablesWithInvalidIte
 		[]gqlerrors.FormattedError{
 			testutil.RuleError(
 				`Variable "$a" has invalid default value: ["one", 2].`+
-					"\nIn element #1: Expected type \"String\", found 2.",
+					"\nIn element #2: Expected type \"String\", found 2."+
+					"\nIn element #2: Error: cannot parse *ast.IntValue to string",
 				2, 40),
 		})
 }
