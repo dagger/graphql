@@ -3,12 +3,12 @@ package graphql
 import (
 	"fmt"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 
 	"github.com/dagger/graphql/language/ast"
 	"github.com/dagger/graphql/language/printer"
-	"golang.org/x/exp/slices"
 )
 
 const (
