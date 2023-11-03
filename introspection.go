@@ -3,7 +3,9 @@ package graphql
 import (
 	"fmt"
 	"reflect"
+	"slices"
 	"sort"
+	"strings"
 
 	"github.com/dagger/graphql/language/ast"
 	"github.com/dagger/graphql/language/printer"
@@ -426,6 +428,9 @@ func init() {
 						for _, ttype := range schema.TypeMap() {
 							results = append(results, ttype)
 						}
+						slices.SortFunc(results, func(a, b Type) int {
+							return strings.Compare(a.Name(), b.Name())
+						})
 						return results, nil
 					}
 					return []Type{}, nil
@@ -474,6 +479,10 @@ func init() {
 				)),
 				Resolve: func(p ResolveParams) (any, error) {
 					if schema, ok := p.Source.(Schema); ok {
+						dirs := schema.Directives()
+						slices.SortFunc(dirs, func(a, b *Directive) int {
+							return strings.Compare(a.Name, b.Name)
+						})
 						return schema.Directives(), nil
 					}
 					return nil, nil
@@ -559,6 +568,9 @@ func init() {
 					}
 					fields = append(fields, field)
 				}
+				slices.SortFunc(fields, func(a, b *FieldDefinition) int {
+					return strings.Compare(a.Name, b.Name)
+				})
 				return fields, nil
 			}
 			return nil, nil
@@ -598,6 +610,10 @@ func init() {
 			includeDeprecated, _ := p.Args["includeDeprecated"].(bool)
 			if ttype, ok := p.Source.(*Enum); ok {
 				if includeDeprecated {
+					vals := ttype.Values()
+					slices.SortFunc(vals, func(a, b *EnumValueDefinition) int {
+						return strings.Compare(a.Name, b.Name)
+					})
 					return ttype.Values(), nil
 				}
 				values := []*EnumValueDefinition{}
@@ -607,6 +623,9 @@ func init() {
 					}
 					values = append(values, value)
 				}
+				slices.SortFunc(values, func(a, b *EnumValueDefinition) int {
+					return strings.Compare(a.Name, b.Name)
+				})
 				return values, nil
 			}
 			return nil, nil
@@ -620,6 +639,9 @@ func init() {
 				for _, field := range ttype.Fields() {
 					fields = append(fields, field)
 				}
+				slices.SortFunc(fields, func(a, b *InputObjectField) int {
+					return strings.Compare(a.PrivateName, b.PrivateName)
+				})
 				return fields, nil
 			}
 			return nil, nil
