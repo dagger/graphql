@@ -794,6 +794,12 @@ func completeAbstractValue(eCtx *executionContext, returnType Abstract, fieldAST
 	}
 	if unionReturnType, ok := returnType.(*Union); ok && unionReturnType.ResolveType != nil {
 		runtimeType = unionReturnType.ResolveType(resolveTypeParams)
+		if !eCtx.Schema.IsPossibleType(returnType, runtimeType) {
+			panic(gqlerrors.NewFormattedError(
+				fmt.Sprintf(`Runtime Object type "%v" is not a possible type `+
+					`for "%v".`, runtimeType, returnType),
+			))
+		}
 	} else if interfaceReturnType, ok := returnType.(*Interface); ok && interfaceReturnType.ResolveType != nil {
 		runtimeType = interfaceReturnType.ResolveType(resolveTypeParams)
 		// verify the object matches the interface

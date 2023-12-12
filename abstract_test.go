@@ -424,7 +424,7 @@ func TestResolveTypeOnInterfaceYieldsUsefulError(t *testing.T) {
 	humanType = graphql.NewObject(graphql.ObjectConfig{
 		Name: "Human",
 		Fields: graphql.Fields{
-			"name": &graphql.Field{
+			"job": &graphql.Field{
 				Type: graphql.String,
 			},
 		},
@@ -507,7 +507,7 @@ func TestResolveTypeOnInterfaceYieldsUsefulError(t *testing.T) {
 		},
 		Errors: []gqlerrors.FormattedError{
 			{
-				Message: `Runtime Object type "Human" is not a possible type for "Pet".`,
+				Message: `"Pet" expects field "name" but "Human" does not provide it.`,
 				Locations: []location.SourceLocation{
 					{
 						Line:   2,
